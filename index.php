@@ -149,12 +149,47 @@ $nextSteps = [
         }
 
         .hero-main { padding: 36px; }
+        .hero-main .db-banner {
+            display: none;
+        }
+        .hero {
+            grid-template-columns: minmax(0, 7fr) minmax(280px, 3fr);
+            gap: 24px;
+        }
+        .dashboard-row {
+            display: block;
+            margin-top: 20px;
+        }
+        .dashboard-main,
         .hero-side {
             padding: 28px;
+            min-width: 0;
+        }
+        .dashboard-main {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .hero-side {
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            min-width: 0;
+        }
+        .menu-panel {
+            padding: 28px;
+        }
+        .menu-panel .actions {
+            margin-top: 0;
+        }
+        .menu-panel .button-primary,
+        .menu-panel .button-secondary {
+            background: rgba(56, 189, 248, 0.18);
+            border-color: rgba(56, 189, 248, 0.32);
+            color: #e0f2fe;
+        }
+        .menu-panel .button-primary:hover,
+        .menu-panel .button-secondary:hover {
+            background: rgba(56, 189, 248, 0.26);
         }
 
         .tag {
@@ -170,6 +205,26 @@ $nextSteps = [
             font-weight: 700;
             margin-bottom: 20px;
             max-width: 100%;
+        }
+
+        .hero-brand {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .hero-brand img {
+            width: 170px;
+            max-width: 32%;
+            height: auto;
+            border-radius: 18px;
+            box-shadow: 0 16px 40px rgba(0,0,0,0.28);
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
+        .hero-copy {
+            min-width: 0;
         }
 
         h1 {
@@ -204,15 +259,16 @@ $nextSteps = [
         }
 
         .button-primary {
-            background: linear-gradient(135deg, var(--accent), var(--accent-2));
-            color: white;
-            box-shadow: 0 12px 24px rgba(34,197,94,0.25);
+            background: rgba(56, 189, 248, 0.24);
+            border: 1px solid rgba(56, 189, 248, 0.38);
+            color: #e0f2fe;
+            box-shadow: 0 12px 24px rgba(56, 189, 248, 0.14);
         }
 
         .button-secondary {
-            border: 1px solid var(--panel-border);
-            color: var(--text);
-            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(56, 189, 248, 0.30);
+            color: #e0f2fe;
+            background: rgba(56, 189, 248, 0.14);
         }
 
         .db-banner {
@@ -253,6 +309,8 @@ $nextSteps = [
         .mini-stat:last-child { border-bottom: 0; }
         .mini-stat span:first-child { color: var(--muted); }
         .mini-stat strong { font-size: 1.1rem; text-align: right; }
+        .mini-stat.status-row strong.status-ok-text { color: #86efac; }
+        .mini-stat.status-row strong.status-error-text { color: #fca5a5; }
 
         .cards {
             margin-top: 20px;
@@ -293,10 +351,6 @@ $nextSteps = [
         }
 
         @media (min-width: 901px) {
-            .hero {
-                grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
-                gap: 24px;
-            }
             .cards {
                 grid-template-columns: repeat(3, minmax(0, 1fr));
                 gap: 14px;
@@ -304,7 +358,11 @@ $nextSteps = [
         }
 
         @media (max-width: 900px) {
-            .hero-main, .hero-side, .card, .next { padding: 22px; }
+            .hero {
+                grid-template-columns: 1fr;
+                gap: 14px;
+            }
+            .hero-main, .dashboard-main, .hero-side, .menu-panel, .card, .next { padding: 22px; }
         }
 
         @media (max-width: 640px) {
@@ -316,7 +374,16 @@ $nextSteps = [
 
             .panel { border-radius: 18px; }
             .hero { gap: 10px; }
-            .hero-main, .hero-side, .card, .next { padding: 15px; }
+            .hero-main, .dashboard-main, .hero-side, .menu-panel, .card, .next { padding: 15px; }
+            .hero-brand {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 14px;
+            }
+            .hero-brand img {
+                width: 140px;
+                max-width: 100%;
+            }
             .tag {
                 font-size: 0.8rem;
                 padding: 6px 10px;
@@ -370,25 +437,13 @@ $nextSteps = [
     <main class="container">
         <section class="hero">
             <div class="panel hero-main">
-                <div class="tag">⚽ Welkomsscherm</div>
-                <h1><?= htmlspecialchars($title, ENT_QUOTES, 'UTF-8') ?></h1>
-                <p class="subtitle"><?= htmlspecialchars($subtitle, ENT_QUOTES, 'UTF-8') ?>. Dit is de startpagina van jouw poolsite. Vanaf hier kunnen we deelnemers, wedstrijden, voorspellingen en de live ranglijst stap voor stap toevoegen.</p>
-
-                <div class="actions">
-                    <a class="button button-primary" href="participants.php">Deelnemers beheren</a>
-                    <a class="button button-secondary" href="matches.php">Wedstrijden beheren</a>
-                    <a class="button button-secondary" href="form-print.php">Printformulier</a>
-                    <a class="button button-secondary" href="rules.php">Regels</a>
-                    <a class="button button-secondary" href="#volgende-stappen">Verder bouwen</a>
-                </div>
-
-                <div class="db-banner <?= htmlspecialchars($dbStatusClass, ENT_QUOTES, 'UTF-8') ?>">
-                    <strong>Database status: <?= htmlspecialchars($dbStatus, ENT_QUOTES, 'UTF-8') ?></strong>
-                    <p>
-                        <?= $dbError === null
-                            ? 'De MySQL-verbinding is succesvol opgezet via de waarden uit .env en de basis-tabellen zijn klaar.'
-                            : 'De koppeling gebruikt .env, maar geeft nu nog een fout: ' . htmlspecialchars($dbError, ENT_QUOTES, 'UTF-8') ?>
-                    </p>
+                <div class="hero-brand">
+                    <img src="assets/wk2026-logo.jpg" alt="WK 2026 logo">
+                    <div class="hero-copy">
+                        <div class="tag">⚽ Welkomsscherm</div>
+                        <h1><?= htmlspecialchars($title, ENT_QUOTES, 'UTF-8') ?></h1>
+                        <p class="subtitle"><?= htmlspecialchars($subtitle, ENT_QUOTES, 'UTF-8') ?>. Dit is de startpagina van jouw poolsite. Vanaf hier kunnen we deelnemers, wedstrijden, voorspellingen en de live ranglijst stap voor stap toevoegen.</p>
+                    </div>
                 </div>
             </div>
 
@@ -396,14 +451,32 @@ $nextSteps = [
                 <div>
                     <h2 class="scoreboard-title">Snelle status</h2>
                     <?php foreach ($stats as $label => $value): ?>
-                        <div class="mini-stat">
+                        <?php
+                            $rowClass = $label === 'Database' ? 'mini-stat status-row' : 'mini-stat';
+                            $valueClass = '';
+                            if ($label === 'Database') {
+                                $valueClass = $value === 'Verbonden' ? 'status-ok-text' : 'status-error-text';
+                            }
+                        ?>
+                        <div class="<?= htmlspecialchars($rowClass, ENT_QUOTES, 'UTF-8') ?>">
                             <span><?= htmlspecialchars($label, ENT_QUOTES, 'UTF-8') ?></span>
-                            <strong><?= htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8') ?></strong>
+                            <strong class="<?= htmlspecialchars($valueClass, ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8') ?></strong>
                         </div>
                     <?php endforeach; ?>
                 </div>
-                <p class="footer">Tip: de database-instellingen worden nu gelezen uit <code>.env</code>. De volgende stap is echte schermen bouwen voor deelnemers, wedstrijden en voorspellingen.</p>
             </aside>
+        </section>
+
+        <section class="dashboard-row">
+            <div class="panel menu-panel">
+                <div class="actions">
+                    <a class="button button-primary" href="participants.php">Deelnemers beheren</a>
+                    <a class="button button-secondary" href="matches.php">Wedstrijden beheren</a>
+                    <a class="button button-secondary" href="form-print.php">Printformulier</a>
+                    <a class="button button-secondary" href="rules.php">Regels</a>
+                    <a class="button button-secondary" href="#volgende-stappen">Verder bouwen</a>
+                </div>
+            </div>
         </section>
 
         <section class="cards">
