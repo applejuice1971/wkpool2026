@@ -1,0 +1,9 @@
+.env
+.runtime/
+__pycache__/
+*.log
+*.sqlite
+*.pid
+*.sock
+*.zip
+.DS_Store
