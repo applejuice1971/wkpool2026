@@ -473,6 +473,8 @@ $nextSteps = [
                     <a class="button button-primary" href="participants.php">Deelnemers beheren</a>
                     <a class="button button-secondary" href="matches.php">Wedstrijden beheren</a>
                     <a class="button button-secondary" href="form-print.php">Printformulier</a>
+                    <a class="button button-secondary" href="predictions-overview.php">Voorspellingen</a>
+                    <a class="button button-secondary" href="imports-overview.php">Imports</a>
                     <a class="button button-secondary" href="rules.php">Regels</a>
                     <a class="button button-secondary" href="#volgende-stappen">Verder bouwen</a>
                 </div>

@@ -55,9 +55,13 @@ function formatKoTeamLabel(string $team): string
     return mb_substr($team, 0, 12) . '…' . mb_substr($team, -1);
 }
 
-function chunkMatches(array $matches, int $size = 36): array
+function splitInTwo(array $items): array
 {
-    return array_chunk($matches, $size);
+    $half = (int) ceil(count($items) / 2);
+    return [
+        array_slice($items, 0, $half),
+        array_slice($items, $half),
+    ];
 }
 
 function splitInThree(array $items): array
@@ -90,7 +94,6 @@ function formatGroupTeamLabel(string $team): string
     return $presets[$team] ?? $team;
 }
 
-$pages = chunkMatches($matches, 36);
 [$koTeamsCol1, $koTeamsCol2, $koTeamsCol3] = splitInThree($qualifiedTeams);
 ?><!DOCTYPE html>
 <html lang="nl">
@@ -147,80 +150,95 @@ $pages = chunkMatches($matches, 36);
             background: white;
             color: #111827;
             border-radius: 18px;
-            padding: 8mm 7mm 7mm;
+            padding: 4mm 4mm 4mm;
             margin-bottom: 18px;
         }
         .sheet-header {
             display: grid;
             grid-template-columns: 1.2fr 0.8fr;
-            gap: 8px;
-            margin-bottom: 6px;
+            gap: 6px;
+            margin-bottom: 5px;
             align-items: start;
         }
-        .title h1 { margin: 0 0 1px; font-size: 24px; line-height: 1.0; }
+        .title h1 { margin: 0 0 1px; font-size: 21px; line-height: 1.0; }
         .title p, .hint, .page-footer { margin: 0; color: #475569; line-height: 1.3; }
         .meta-block {
-            border: 1.5px solid #0f172a; border-radius: 10px; padding: 8px;
+            border: 1.5px solid #0f172a; border-radius: 10px; padding: 6px;
         }
         .meta-line {
-            display: grid; grid-template-columns: 70px 1fr; gap: 6px; margin-bottom: 5px; font-size: 11px;
+            display: grid; grid-template-columns: 58px 1fr; gap: 6px; margin-bottom: 3px; font-size: 10px;
         }
-        .line-box { min-height: 16px; border-bottom: 1px solid #334155; }
+        .line-box { min-height: 14px; border-bottom: 1px solid #334155; }
         .guide {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin: 0 0 6px;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin: 0 0 8px;
         }
         .guide-card {
-            border: 1.2px solid #dbe4ee; border-radius: 10px; padding: 5px 7px; font-size: 10px; line-height: 1.2;
+            border: 1.2px solid #dbe4ee; border-radius: 10px; padding: 5px 7px; font-size: 9px; line-height: 1.2;
         }
         .guide-card strong { display: block; margin-bottom: 2px; }
 
-        .matches-three-col {
+        .matches-two-col {
             display: grid;
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 6px;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
         }
-        .matches-col {
+        .matches-list {
             display: grid;
             gap: 4px;
         }
         .match-row {
             display: grid;
-            grid-template-columns: 26px 26px minmax(0, 1fr) 44px 28px 28px;
+            grid-template-columns: 30px 30px 46px minmax(0, 1fr) 50px 50px;
             align-items: center;
-            gap: 3px;
-            border: 1px solid #dbe4ee;
-            border-radius: 8px;
-            padding: 4px;
+            gap: 4px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
+            padding: 3px 4px;
             page-break-inside: avoid;
+            min-height: 30px;
         }
-        .match-no { font-weight: 800; font-size: 12px; }
-        .match-stage { font-size: 9px; color: #475569; }
-        .match-teams { min-width: 0; }
+        .match-no {
+            font-weight: 800;
+            font-size: 14px;
+        }
+        .match-stage {
+            font-size: 13px;
+            color: #334155;
+            font-weight: 800;
+        }
         .match-date {
-            font-size: 8px;
-            color: #64748b;
-            text-align: right;
-            line-height: 1.05;
-            white-space: nowrap;
+            font-size: 13px;
+            color: #334155;
+            line-height: 1;
+            font-weight: 700;
+        }
+        .match-teams {
+            min-width: 0;
         }
         .match-teams strong {
             display: block;
-            font-size: 12px;
-            line-height: 1.08;
+            font-size: 13px;
+            line-height: 1;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
         .score-box {
-            height: 28px; border: 1.7px solid #0f172a; border-radius: 7px; display: flex; align-items: center; justify-content: center;
-            font-size: 8px; color: #64748b; background: #fff;
+            height: 21px;
+            border: 1.5px solid #0f172a;
+            border-radius: 5px;
+            display: block;
+            font-size: 0;
+            color: transparent;
+            background: #fff;
+            min-width: 50px;
         }
 
         .ko-grid3 {
             display: grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 8px;
-            margin-top: 8px;
+            gap: 6px;
+            margin-top: 6px;
         }
         .ko-block {
             border: 1px solid #cbd5e1;
@@ -312,22 +330,95 @@ $pages = chunkMatches($matches, 36);
             .nav { display: grid; grid-template-columns: 1fr; }
             .nav a, .nav button, .selector button { width: 100%; text-align: center; }
             .print-sheet { padding: 14px; border-radius: 14px; }
-            .sheet-header, .guide, .matches-three-col, .ko-grid3 { grid-template-columns: 1fr; }
+            .sheet-header, .guide, .ko-grid3, .matches-two-col { grid-template-columns: 1fr; }
+            .match-row {
+                grid-template-columns: 1fr;
+                align-items: start;
+            }
         }
 
         @media print {
+            @page {
+                size: A4 portrait;
+                margin: 8mm;
+            }
             body { background: white; color: #111827; }
             .screen-wrap { max-width: none; margin: 0; padding: 0; }
             .panel, .nav, .selector, .screen-only { display: none !important; }
-            .print-sheet { margin: 0; border-radius: 0; box-shadow: none; page-break-after: always; }
+            .print-sheet { margin: 0; border-radius: 0; box-shadow: none; page-break-after: always; padding: 0; }
             .print-sheet:last-child { page-break-after: auto; }
-            .matches-three-col {
+            .title h1 {
+                font-size: 18px;
+            }
+            .guide {
+                margin-bottom: 6px;
+            }
+            .guide-card {
+                font-size: 8px;
+                padding: 4px 6px;
+            }
+            .matches-two-col {
                 display: grid !important;
-                grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
                 gap: 6px !important;
             }
-            .matches-col {
+            .matches-list {
                 display: grid !important;
+                gap: 3px !important;
+            }
+            .match-row {
+                grid-template-columns: 26px 26px 40px minmax(0, 1fr) 42px 42px;
+                gap: 3px;
+                padding: 2px 3px;
+                min-height: 25px;
+            }
+            .match-no,
+            .match-stage,
+            .match-date {
+                font-size: 11px;
+            }
+            .match-teams strong {
+                font-size: 11px;
+            }
+            .score-box {
+                height: 18px;
+                min-width: 42px;
+            }
+            .ko-grid3 {
+                gap: 4px;
+            }
+            .ko-head,
+            .ko-row {
+                grid-template-columns: minmax(76px, 1fr) repeat(6, 16px);
+                column-gap: 3px;
+                padding: 2px 3px;
+            }
+            .ko-row > :nth-child(n+2),
+            .ko-head > :nth-child(n+2) {
+                width: 16px;
+                min-width: 16px;
+                max-width: 16px;
+            }
+            .ko-land {
+                font-size: 11px;
+            }
+            .ko-col-label {
+                font-size: 8px;
+                width: 16px;
+            }
+            .ko-box-wrap {
+                width: 16px;
+                height: 16px;
+            }
+            .ko-mark {
+                width: 11px;
+                height: 11px;
+                border-width: 1.6px;
+            }
+            .ko-note,
+            .page-footer {
+                font-size: 9px;
+                margin-top: 6px;
             }
         }
     </style>
@@ -362,60 +453,56 @@ $pages = chunkMatches($matches, 36);
         <?php if (!$participant): ?>
             <div class="panel screen-only"><p>Kies hierboven een deelnemer om het formulier te genereren.</p></div>
         <?php else: ?>
-            <?php foreach ($pages as $pageIndex => $pageMatches): ?>
-                <?php [$col1, $col2, $col3] = splitInThree($pageMatches); $pageBase = ($pageIndex * 36); $columnSizes = [count($col1), count($col2), count($col3)]; $columnOffsets = [0, $columnSizes[0], $columnSizes[0] + $columnSizes[1]]; ?>
-                <section class="print-sheet<?= $pageIndex > 0 ? ' compact-followup' : '' ?>">
-                    <?php if ($pageIndex === 0): ?>
-                    <header class="sheet-header">
-                        <div class="title">
-                            <h1>WK Pool 2026</h1>
-                            <p>Groepsfase voorspellingen — pagina <?= $pageIndex + 1 ?> van <?= count($pages) ?></p>
-                        </div>
-                        <div class="meta-block">
-                            <div class="meta-line"><strong>Naam</strong><div class="line-box"><?= htmlspecialchars($participant['name'], ENT_QUOTES, 'UTF-8') ?></div></div>
-                            <div class="meta-line"><strong>ID</strong><div class="line-box">P-<?= str_pad((string) $participant['id'], 3, '0', STR_PAD_LEFT) ?></div></div>
-                            <div class="meta-line"><strong>Versie</strong><div class="line-box">Form v3</div></div>
-                        </div>
-                    </header>
-
-                    <div class="guide">
-                        <div class="guide-card"><strong>Invullen</strong>Gebruik alleen cijfers. Links thuisscore, rechts uitscore.</div>
-                        <div class="guide-card"><strong>Compact</strong>Fase staat nu apart zodat er meer wedstrijden per pagina passen.</div>
+            <section class="print-sheet">
+                <header class="sheet-header">
+                    <div class="title">
+                        <h1>WK Pool 2026</h1>
+                        <p>Groepsfase voorspellingen</p>
                     </div>
-                    <?php endif; ?>
+                    <div class="meta-block">
+                        <div class="meta-line"><strong>Naam</strong><div class="line-box"><?= htmlspecialchars($participant['name'], ENT_QUOTES, 'UTF-8') ?></div></div>
+                        <div class="meta-line"><strong>ID</strong><div class="line-box">P-<?= str_pad((string) $participant['id'], 3, '0', STR_PAD_LEFT) ?></div></div>
+                        <div class="meta-line"><strong>Versie</strong><div class="line-box">Form scan v1</div></div>
+                    </div>
+                </header>
 
-                    <div class="matches-three-col">
-                        <?php foreach ([$col1, $col2, $col3] as $columnIndex => $columnMatches): ?>
-                            <div class="matches-col">
-                                <?php foreach ($columnMatches as $matchIndex => $match): ?>
-                                    <?php $absoluteIndex = $pageBase + $columnOffsets[$columnIndex] + $matchIndex + 1; ?>
-                                    <div class="match-row">
-                                        <div class="match-no">#<?= $absoluteIndex ?></div>
-                                        <div class="match-stage"><?= htmlspecialchars(str_replace('Group ', 'G', $match['stage']), ENT_QUOTES, 'UTF-8') ?></div>
-                                        <div class="match-teams">
-                                            <strong><?= htmlspecialchars(formatGroupTeamLabel($match['home_team']), ENT_QUOTES, 'UTF-8') ?> — <?= htmlspecialchars(formatGroupTeamLabel($match['away_team']), ENT_QUOTES, 'UTF-8') ?></strong>
-                                        </div>
-                                        <div class="match-date"><?= htmlspecialchars(date('d-m H:i', strtotime($match['match_date'])), ENT_QUOTES, 'UTF-8') ?></div>
-                                        <div class="score-box">T</div>
-                                        <div class="score-box">U</div>
+                <div class="guide">
+                    <div class="guide-card"><strong>Invullen</strong>Gebruik alleen cijfers. Schrijf één cijfer per vakje, links thuisscore en rechts uitscore.</div>
+                    <div class="guide-card"><strong>Scanvriendelijk</strong>Eén wedstrijd per regel. Laat datum en scorevakjes vrij van extra tekst of markeringen.</div>
+                </div>
+
+                <div class="matches-two-col">
+                    <?php [$allLeftMatches, $allRightMatches] = splitInTwo($matches); ?>
+                    <?php foreach ([$allLeftMatches, $allRightMatches] as $columnIndex => $columnMatches): ?>
+                        <div class="matches-list">
+                            <?php foreach ($columnMatches as $matchIndex => $match): ?>
+                                <?php $absoluteIndex = $columnIndex === 0 ? ($matchIndex + 1) : (count($allLeftMatches) + $matchIndex + 1); ?>
+                                <div class="match-row">
+                                    <div class="match-no"><?= $absoluteIndex ?></div>
+                                    <div class="match-stage"><?= htmlspecialchars(str_replace('Group ', 'G', $match['stage']), ENT_QUOTES, 'UTF-8') ?></div>
+                                    <div class="match-date"><?= htmlspecialchars(date('d-m', strtotime($match['match_date'])), ENT_QUOTES, 'UTF-8') ?></div>
+                                    <div class="match-teams">
+                                        <strong><?= htmlspecialchars(formatGroupTeamLabel($match['home_team']), ENT_QUOTES, 'UTF-8') ?> - <?= htmlspecialchars(formatGroupTeamLabel($match['away_team']), ENT_QUOTES, 'UTF-8') ?></strong>
                                     </div>
-                                <?php endforeach; ?>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
+                                    <div class="score-box"></div>
+                                    <div class="score-box"></div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
 
-                    <footer class="page-footer">
-                        <span>Schrijf duidelijk met donkere pen.</span>
-                        <span>P-<?= str_pad((string) $participant['id'], 3, '0', STR_PAD_LEFT) ?></span>
-                    </footer>
-                </section>
-            <?php endforeach; ?>
+                <footer class="page-footer">
+                    <span>Schrijf duidelijk met donkere pen. Wedstrijdnummer en teamnamen niet overschrijven.</span>
+                    <span>P-<?= str_pad((string) $participant['id'], 3, '0', STR_PAD_LEFT) ?></span>
+                </footer>
+            </section>
 
             <section class="print-sheet">
                 <header class="sheet-header">
                     <div class="title">
                         <h1>WK Pool 2026</h1>
-                        <p>Knock-outmatrix — 3 kolommen naast elkaar</p>
+                        <p>Knock-outmatrix compact</p>
                     </div>
                     <div class="meta-block">
                         <div class="meta-line"><strong>Naam</strong><div class="line-box"><?= htmlspecialchars($participant['name'], ENT_QUOTES, 'UTF-8') ?></div></div>

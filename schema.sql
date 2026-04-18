@@ -36,3 +36,39 @@ CREATE TABLE IF NOT EXISTS predictions (
     CONSTRAINT fk_predictions_participant FOREIGN KEY (participant_id) REFERENCES participants(id) ON DELETE CASCADE,
     CONSTRAINT fk_predictions_match FOREIGN KEY (match_id) REFERENCES matches(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS prediction_imports (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    participant_id INT UNSIGNED NULL,
+    source_filename VARCHAR(255) NOT NULL,
+    source_path VARCHAR(255) NOT NULL,
+    source_type ENUM('pdf','jpg','jpeg','png') NOT NULL,
+    status ENUM('received','parsed','imported','review_needed','failed') NOT NULL DEFAULT 'received',
+    extracted_name VARCHAR(120) NULL,
+    extracted_text MEDIUMTEXT NULL,
+    notes TEXT NULL,
+    imported_at DATETIME NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    KEY idx_prediction_imports_status (status),
+    KEY idx_prediction_imports_created_at (created_at),
+    CONSTRAINT fk_prediction_imports_participant FOREIGN KEY (participant_id) REFERENCES participants(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS prediction_import_rows (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    import_id INT UNSIGNED NOT NULL,
+    match_id INT UNSIGNED NULL,
+    raw_label VARCHAR(255) NOT NULL,
+    predicted_home_score TINYINT UNSIGNED NULL,
+    predicted_away_score TINYINT UNSIGNED NULL,
+    confidence DECIMAL(5,2) NULL,
+    status ENUM('parsed','matched','imported','review_needed') NOT NULL DEFAULT 'parsed',
+    notes VARCHAR(255) NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    KEY idx_prediction_import_rows_import_id (import_id),
+    KEY idx_prediction_import_rows_match_id (match_id),
+    CONSTRAINT fk_prediction_import_rows_import FOREIGN KEY (import_id) REFERENCES prediction_imports(id) ON DELETE CASCADE,
+    CONSTRAINT fk_prediction_import_rows_match FOREIGN KEY (match_id) REFERENCES matches(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

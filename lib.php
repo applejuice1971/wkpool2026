@@ -53,6 +53,69 @@ function wkGetPdo(): PDO
     ]);
 }
 
+function wkEnsureImportSchema(PDO $pdo): void
+{
+    $pdo->exec(<<<SQL
+CREATE TABLE IF NOT EXISTS prediction_imports (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    participant_id INT UNSIGNED NULL,
+    source_filename VARCHAR(255) NOT NULL,
+    source_path VARCHAR(255) NOT NULL,
+    source_type ENUM('pdf','jpg','jpeg','png') NOT NULL,
+    status ENUM('received','parsed','imported','review_needed','failed') NOT NULL DEFAULT 'received',
+    extracted_name VARCHAR(120) NULL,
+    extracted_text MEDIUMTEXT NULL,
+    notes TEXT NULL,
+    imported_at DATETIME NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    KEY idx_prediction_imports_status (status),
+    KEY idx_prediction_imports_created_at (created_at),
+    CONSTRAINT fk_prediction_imports_participant FOREIGN KEY (participant_id) REFERENCES participants(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+SQL);
+
+    $pdo->exec(<<<SQL
+CREATE TABLE IF NOT EXISTS prediction_import_rows (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    import_id INT UNSIGNED NOT NULL,
+    match_id INT UNSIGNED NULL,
+    raw_label VARCHAR(255) NOT NULL,
+    predicted_home_score TINYINT UNSIGNED NULL,
+    predicted_away_score TINYINT UNSIGNED NULL,
+    confidence DECIMAL(5,2) NULL,
+    status ENUM('parsed','matched','imported','review_needed') NOT NULL DEFAULT 'parsed',
+    notes VARCHAR(255) NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    KEY idx_prediction_import_rows_import_id (import_id),
+    KEY idx_prediction_import_rows_match_id (match_id),
+    CONSTRAINT fk_prediction_import_rows_import FOREIGN KEY (import_id) REFERENCES prediction_imports(id) ON DELETE CASCADE,
+    CONSTRAINT fk_prediction_import_rows_match FOREIGN KEY (match_id) REFERENCES matches(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+SQL);
+}
+
+function wkImportStoragePath(): string
+{
+    $dir = __DIR__ . '/uploads/prediction-imports';
+    if (!is_dir($dir)) {
+        mkdir($dir, 0775, true);
+    }
+
+    return $dir;
+}
+
+function wkStatusBadgeClass(string $status): string
+{
+    return match ($status) {
+        'imported' => 'ok',
+        'review_needed' => 'warn',
+        'failed' => 'bad',
+        default => 'neutral',
+    };
+}
+
 function wkBaseStyles(string $accent = '#22c55e'): string
 {
     return <<<CSS
@@ -153,6 +216,45 @@ function wkBaseStyles(string $accent = '#22c55e'): string
             color: #fde68a;
         }
         .small { font-size: .92rem; }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        .badge.ok {
+            background: rgba(34, 197, 94, 0.14);
+            color: #bbf7d0;
+        }
+        .badge.warn {
+            background: rgba(245, 158, 11, 0.14);
+            color: #fde68a;
+        }
+        .badge.bad {
+            background: rgba(239, 68, 68, 0.14);
+            color: #fecaca;
+        }
+        .badge.neutral {
+            background: rgba(148, 163, 184, 0.14);
+            color: #cbd5e1;
+        }
+        .toolbar {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        .muted-box {
+            padding: 14px 16px;
+            border-radius: 14px;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.06);
+        }
         @media (max-width: 720px) {
             .container {
                 width: min(100% - 16px, 1100px);
