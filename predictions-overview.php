@@ -27,26 +27,10 @@ INNER JOIN matches m ON m.id = pr.match_id
 ORDER BY p.name ASC, m.match_date ASC, m.id ASC
 SQL)->fetchAll();
 ?>
-<!doctype html>
-<html lang="nl">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Voorspellingen overzicht</title>
-    <?= wkBaseStyles('#38bdf8') ?>
-</head>
-<body>
+<?php header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0'); header('Pragma: no-cache'); ?>
+<?= wkPageShellStart('WK Pool 2026 · Voorspellingen overzicht', 'home') ?>
 <div class="container stack">
-    <div class="nav">
-        <a class="secondary" href="index.php">Dashboard</a>
-        <a class="secondary" href="participants.php">Deelnemers</a>
-        <a class="secondary" href="matches.php">Wedstrijden</a>
-        <a class="primary" href="predictions-overview.php">Voorspellingen</a>
-        <a class="secondary" href="imports-overview.php">Imports</a>
-        <a class="secondary" href="rules.php">Regels</a>
-    </div>
-
-    <section class="panel">
+        <section class="panel">
         <div class="toolbar">
             <div>
                 <h1>Voorspellingen overzicht</h1>
@@ -95,5 +79,5 @@ SQL)->fetchAll();
         <a href="imports-overview.php">Imports</a>
     </div>
 </div>
-</body>
-</html>
+<?= wkPageShellEnd() ?>
+

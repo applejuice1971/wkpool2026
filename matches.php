@@ -52,26 +52,9 @@ if (isset($_GET['deleted'])) {
 $matches = $pdo->query('SELECT id, stage, match_date, home_team, away_team, status FROM matches ORDER BY match_date ASC')->fetchAll();
 ?>
 <?php header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0'); header('Pragma: no-cache'); ?>
-<!DOCTYPE html>
-<html lang="nl">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WK Pool 2026 · Wedstrijdenbeheer</title>
-    <?= wkBaseStyles('#38bdf8') ?>
-</head>
-<body>
+<?php header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0'); header('Pragma: no-cache'); ?>
+<?= wkPageShellStart('WK Pool 2026 · Wedstrijdenbeheer', 'matches') ?>
     <main class="container stack">
-        <nav class="nav">
-            <a href="index.php" class="secondary">← Home</a>
-            <a href="participants.php" class="secondary">Deelnemers</a>
-            <a href="matches.php" class="primary">Wedstrijden</a>
-            <a href="form-print.php" class="secondary">Printformulier</a>
-            <a href="rules.php" class="secondary">Regels</a>
-        </nav>
-
         <section class="panel">
             <h1>Wedstrijdenbeheer</h1>
             <p>Voeg hier handmatig wedstrijden toe. Dit is meteen een goede basis voor latere import.</p>
@@ -144,6 +127,4 @@ $matches = $pdo->query('SELECT id, stage, match_date, home_team, away_team, stat
             <a href="participants.php">Deelnemers</a>
             <a href="matches.php" class="active">Wedstrijden</a>
         </nav>
-    </main>
-</body>
-</html>
+<?= wkPageShellEnd() ?>

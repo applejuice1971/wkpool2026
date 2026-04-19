@@ -116,9 +116,41 @@ function wkStatusBadgeClass(string $status): string
     };
 }
 
-function wkBaseStyles(string $accent = '#22c55e'): string
+function wkPageShellStart(string $title, string $active = 'home', string $accent = '#22c55e'): string
 {
-    return <<<CSS
+    $titleEsc = htmlspecialchars($title, ENT_QUOTES, 'UTF-8');
+    $items = [
+        'home' => ['label' => 'Home', 'href' => 'index.php', 'icon' => '🏠'],
+        'participants' => ['label' => 'Deelnemers', 'href' => 'participants.php', 'icon' => '👥'],
+        'matches' => ['label' => 'Wedstrijden', 'href' => 'matches.php', 'icon' => '🗓️'],
+        'print' => ['label' => 'Printformulier', 'href' => 'form-print.php', 'icon' => '🖨️'],
+        'rules' => ['label' => 'Regels', 'href' => 'rules.php', 'icon' => '📋'],
+    ];
+
+    $nav = '';
+    foreach ($items as $key => $item) {
+        $isActive = $key === $active;
+        $classes = 'side-nav-link' . ($isActive ? ' active' : '');
+        $label = htmlspecialchars($item['label'], ENT_QUOTES, 'UTF-8');
+        $href = htmlspecialchars($item['href'], ENT_QUOTES, 'UTF-8');
+        $icon = htmlspecialchars($item['icon'], ENT_QUOTES, 'UTF-8');
+        $nav .= <<<HTML
+            <a href="{$href}" class="{$classes}">
+                <span class="side-nav-icon">{$icon}</span>
+                <span class="side-nav-text">{$label}</span>
+            </a>
+        HTML;
+    }
+
+    return <<<HTML
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{$titleEsc}</title>
     <style>
         :root {
             --bg-1: #0b1020;
@@ -140,10 +172,80 @@ function wkBaseStyles(string $accent = '#22c55e'): string
             color: var(--text);
             background: linear-gradient(135deg, var(--bg-1), var(--bg-2));
         }
-        .container {
-            width: min(1100px, 100% - 24px);
+        .app-shell {
+            width: min(1280px, 100% - 24px);
             margin: 0 auto;
             padding: 24px 0 40px;
+            display: grid;
+            grid-template-columns: 250px minmax(0, 1fr);
+            gap: 20px;
+        }
+        .side-nav {
+            position: sticky;
+            top: 24px;
+            align-self: start;
+            background: rgba(7, 11, 22, 0.88);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 24px;
+            box-shadow: 0 18px 50px rgba(0,0,0,0.28);
+            padding: 18px 14px;
+            display: grid;
+            gap: 10px;
+            backdrop-filter: blur(10px);
+        }
+        .side-nav-brand {
+            display: grid;
+            gap: 4px;
+            padding: 8px 10px 14px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            margin-bottom: 4px;
+        }
+        .side-nav-brand strong {
+            font-size: 1.02rem;
+        }
+        .side-nav-brand span {
+            color: var(--muted);
+            font-size: 0.92rem;
+        }
+        .side-nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-height: 52px;
+            padding: 12px 14px;
+            border-radius: 16px;
+            text-decoration: none;
+            color: var(--text);
+            border: 1px solid transparent;
+            background: rgba(255,255,255,0.03);
+            transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+        }
+        .side-nav-link:hover {
+            background: rgba(255,255,255,0.06);
+            border-color: rgba(255,255,255,0.08);
+            transform: translateX(2px);
+        }
+        .side-nav-link.active {
+            background: var(--accent-soft);
+            border-color: rgba(255,255,255,0.12);
+        }
+        .side-nav-icon {
+            width: 24px;
+            text-align: center;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        .side-nav-text {
+            font-weight: 700;
+            white-space: nowrap;
+        }
+        .content-shell {
+            min-width: 0;
+        }
+        .container {
+            width: 100%;
+            margin: 0;
+            padding: 0;
         }
         .panel {
             background: var(--panel);
@@ -225,22 +327,10 @@ function wkBaseStyles(string $accent = '#22c55e'): string
             font-weight: 700;
             border: 1px solid rgba(255,255,255,0.08);
         }
-        .badge.ok {
-            background: rgba(34, 197, 94, 0.14);
-            color: #bbf7d0;
-        }
-        .badge.warn {
-            background: rgba(245, 158, 11, 0.14);
-            color: #fde68a;
-        }
-        .badge.bad {
-            background: rgba(239, 68, 68, 0.14);
-            color: #fecaca;
-        }
-        .badge.neutral {
-            background: rgba(148, 163, 184, 0.14);
-            color: #cbd5e1;
-        }
+        .badge.ok { background: rgba(34, 197, 94, 0.14); color: #bbf7d0; }
+        .badge.warn { background: rgba(245, 158, 11, 0.14); color: #fde68a; }
+        .badge.bad { background: rgba(239, 68, 68, 0.14); color: #fecaca; }
+        .badge.neutral { background: rgba(148, 163, 184, 0.14); color: #cbd5e1; }
         .toolbar {
             display: flex;
             gap: 10px;
@@ -255,10 +345,36 @@ function wkBaseStyles(string $accent = '#22c55e'): string
             background: rgba(255,255,255,0.04);
             border: 1px solid rgba(255,255,255,0.06);
         }
-        @media (max-width: 720px) {
-            .container {
-                width: min(100% - 16px, 1100px);
+        @media (max-width: 980px) {
+            .app-shell {
+                width: min(100% - 16px, 1280px);
+                grid-template-columns: 84px minmax(0, 1fr);
+                gap: 14px;
                 padding: 14px 0 88px;
+            }
+            .side-nav {
+                padding: 14px 10px;
+            }
+            .side-nav-brand span,
+            .side-nav-text {
+                display: none;
+            }
+            .side-nav-brand {
+                justify-items: center;
+                text-align: center;
+                padding-inline: 0;
+            }
+            .side-nav-link {
+                justify-content: center;
+                padding: 12px;
+            }
+            .side-nav-icon {
+                width: auto;
+            }
+        }
+        @media (max-width: 720px) {
+            .app-shell {
+                grid-template-columns: 72px minmax(0, 1fr);
             }
             .panel {
                 padding: 16px;
@@ -304,7 +420,7 @@ function wkBaseStyles(string $accent = '#22c55e'): string
             }
             .mobile-tabbar {
                 position: fixed;
-                left: 10px;
+                left: 88px;
                 right: 10px;
                 bottom: 10px;
                 display: grid;
@@ -338,6 +454,47 @@ function wkBaseStyles(string $accent = '#22c55e'): string
                 color: #07140c;
             }
         }
+        @media (max-width: 560px) {
+            .app-shell {
+                grid-template-columns: 64px minmax(0, 1fr);
+                width: min(100% - 12px, 1280px);
+            }
+            .side-nav {
+                padding: 10px 8px;
+                border-radius: 20px;
+            }
+            .mobile-tabbar {
+                left: 78px;
+            }
+        }
     </style>
-    CSS;
+</head>
+<body>
+    <div class="app-shell">
+        <aside class="side-nav">
+            <div class="side-nav-brand">
+                <strong>WK Pool</strong>
+                <span>2026 dashboard</span>
+            </div>
+{$nav}
+        </aside>
+        <div class="content-shell">
+            <main class="container stack">
+HTML;
+}
+
+function wkPageShellEnd(): string
+{
+    return <<<HTML
+            </main>
+        </div>
+    </div>
+</body>
+</html>
+HTML;
+}
+
+function wkBaseStyles(string $accent = '#22c55e'): string
+{
+    return '';
 }

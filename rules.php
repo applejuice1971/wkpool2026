@@ -2,26 +2,9 @@
 require __DIR__ . '/lib.php';
 ?>
 <?php header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0'); header('Pragma: no-cache'); ?>
-<!DOCTYPE html>
-<html lang="nl">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate, max-age=0">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WK Pool 2026 · Regels</title>
-    <?= wkBaseStyles('#f59e0b') ?>
-</head>
-<body>
+<?php header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0'); header('Pragma: no-cache'); ?>
+<?= wkPageShellStart('WK Pool 2026 · Regels', 'rules') ?>
     <main class="container stack">
-        <nav class="nav">
-            <a href="index.php" class="secondary">← Home</a>
-            <a href="participants.php" class="secondary">Deelnemers</a>
-            <a href="matches.php" class="secondary">Wedstrijden</a>
-            <a href="form-print.php" class="secondary">Printformulier</a>
-            <a href="rules.php" class="primary">Regels</a>
-        </nav>
-
         <section class="panel">
             <h1>Regels WK Pool 2026</h1>
             <p>Hier staat het puntensysteem en de speluitleg voor de pool.</p>
@@ -56,6 +39,4 @@ require __DIR__ . '/lib.php';
                 <li>Eenmaal ingeleverd is het formulier <strong>definitief</strong>.</li>
             </ul>
         </section>
-    </main>
-</body>
-</html>
+<?= wkPageShellEnd() ?>

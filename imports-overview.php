@@ -28,26 +28,10 @@ GROUP BY pi.id
 ORDER BY pi.created_at DESC, pi.id DESC
 SQL)->fetchAll();
 ?>
-<!doctype html>
-<html lang="nl">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Ingelezen bestanden</title>
-    <?= wkBaseStyles('#38bdf8') ?>
-</head>
-<body>
+<?php header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0'); header('Pragma: no-cache'); ?>
+<?= wkPageShellStart('WK Pool 2026 · Ingelezen bestanden', 'home') ?>
 <div class="container stack">
-    <div class="nav">
-        <a class="secondary" href="index.php">Dashboard</a>
-        <a class="secondary" href="participants.php">Deelnemers</a>
-        <a class="secondary" href="matches.php">Wedstrijden</a>
-        <a class="secondary" href="predictions-overview.php">Voorspellingen</a>
-        <a class="primary" href="imports-overview.php">Imports</a>
-        <a class="secondary" href="rules.php">Regels</a>
-    </div>
-
-    <section class="panel">
+        <section class="panel">
         <div class="toolbar">
             <div>
                 <h1>Ingelezen bestanden</h1>
@@ -105,5 +89,5 @@ SQL)->fetchAll();
         <a class="active" href="imports-overview.php">Imports</a>
     </div>
 </div>
-</body>
-</html>
+<?= wkPageShellEnd() ?>
+
