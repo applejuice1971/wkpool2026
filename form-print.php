@@ -175,15 +175,16 @@ function formatGroupTeamLabel(string $team): string
         .guide-card {
             border: 1.2px solid #dbe4ee;
             border-radius: 12px;
-            padding: 8px 10px;
-            font-size: 10px;
-            line-height: 1.35;
+            padding: 10px 12px;
+            font-size: 12px;
+            line-height: 1.45;
             background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
         }
         .guide-card strong {
             display: block;
-            margin-bottom: 3px;
+            margin-bottom: 4px;
             color: #0f172a;
+            font-size: 14px;
         }
         .intro-rules {
             border: 1.2px solid #cbd5e1;
@@ -205,16 +206,16 @@ function formatGroupTeamLabel(string $team): string
             padding: 10px 12px;
         }
         .intro-rules h2 {
-            margin: 0 0 6px;
-            font-size: 16px;
+            margin: 0 0 8px;
+            font-size: 18px;
             color: #0f172a;
         }
         .intro-rules p,
         .intro-rules li {
             margin: 0;
             color: #334155;
-            font-size: 12px;
-            line-height: 1.5;
+            font-size: 14px;
+            line-height: 1.6;
         }
         .intro-rules ul {
             margin: 8px 0 0 18px;
@@ -401,9 +402,12 @@ function formatGroupTeamLabel(string $team): string
                 margin-bottom: 7px;
             }
             .guide-card {
-                font-size: 9px;
-                padding: 6px 8px;
+                font-size: 11px;
+                padding: 8px 10px;
                 border-color: #cbd5e1;
+            }
+            .guide-card strong {
+                font-size: 13px;
             }
             .intro-rules {
                 padding: 8px 10px;
@@ -420,13 +424,13 @@ function formatGroupTeamLabel(string $team): string
                 background: #fff;
             }
             .intro-rules h2 {
-                font-size: 14px;
-                margin-bottom: 4px;
+                font-size: 16px;
+                margin-bottom: 5px;
             }
             .intro-rules p,
             .intro-rules li {
-                font-size: 10px;
-                line-height: 1.4;
+                font-size: 12px;
+                line-height: 1.5;
             }
             .matches-two-col {
                 display: grid !important;
@@ -566,7 +570,9 @@ function formatGroupTeamLabel(string $team): string
 
                 <div class="guide">
                     <div class="guide-card"><strong>Invullen</strong>Gebruik alleen cijfers. Schrijf één cijfer per vakje, links thuisscore en rechts uitscore.</div>
+                    <div class="guide-card"><strong>Ausfüllen</strong>Verwende nur Zahlen. Schreibe pro Kästchen genau eine Zahl, links Heimtore und rechts Auswärtstore.</div>
                     <div class="guide-card"><strong>Scanvriendelijk</strong>Eén wedstrijd per regel. Laat datum en scorevakjes vrij van extra tekst of markeringen.</div>
+                    <div class="guide-card"><strong>Scanfreundlich</strong>Nur ein Spiel pro Zeile. Lass Datums- und Ergebnisfelder frei von zusätzlichem Text oder Markierungen.</div>
                 </div>
 
                 <div class="matches-two-col">
