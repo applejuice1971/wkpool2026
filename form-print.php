@@ -155,22 +155,71 @@ function formatGroupTeamLabel(string $team): string
         }
         .sheet-header {
             display: grid;
-            grid-template-columns: 1.2fr 0.8fr;
-            gap: 6px;
-            margin-bottom: 5px;
-            align-items: start;
+            grid-template-columns: 1.3fr 0.9fr;
+            gap: 12px;
+            margin-bottom: 10px;
+            align-items: stretch;
         }
-        .title h1 { margin: 0 0 1px; font-size: 21px; line-height: 1.0; }
+        .title {
+            display: flex;
+            gap: 14px;
+            align-items: center;
+            padding: 10px 12px;
+            border: 1px solid #dbe4ee;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #ffffff 0%, #eef6ff 100%);
+        }
+        .title-logo {
+            width: 64px;
+            height: 64px;
+            object-fit: cover;
+            border-radius: 16px;
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.14);
+            flex-shrink: 0;
+        }
+        .title-copy {
+            display: grid;
+            gap: 4px;
+        }
+        .title h1 { margin: 0; font-size: 31px; line-height: 1; letter-spacing: -0.03em; }
         .title p, .hint, .page-footer { margin: 0; color: #475569; line-height: 1.3; }
+        .title p {
+            font-size: 15px;
+            font-weight: 600;
+        }
         .meta-block {
-            border: 1.5px solid #0f172a; border-radius: 10px; padding: 6px;
+            border: 1.5px solid #0f172a;
+            border-radius: 14px;
+            padding: 12px;
+            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
         }
         .meta-line {
-            display: grid; grid-template-columns: 58px 1fr; gap: 6px; margin-bottom: 3px; font-size: 10px;
+            display: grid;
+            grid-template-columns: 84px 1fr;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 14px;
+            align-items: end;
         }
-        .line-box { min-height: 14px; border-bottom: 1px solid #334155; }
+        .meta-line strong {
+            font-size: 13px;
+            color: #334155;
+            letter-spacing: 0.01em;
+        }
+        .line-box {
+            min-height: 28px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 4px 8px;
+            background: #fff;
+            font-size: 16px;
+            font-weight: 700;
+        }
         .guide {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin: 0 0 8px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin: 0 0 10px;
         }
         .guide-card {
             border: 1.2px solid #dbe4ee;
@@ -379,6 +428,13 @@ function formatGroupTeamLabel(string $team): string
             .nav a, .nav button, .selector button { width: 100%; text-align: center; }
             .print-sheet { padding: 14px; border-radius: 14px; }
             .sheet-header, .guide, .ko-grid3, .matches-two-col, .intro-rules-grid { grid-template-columns: 1fr; }
+            .title {
+                align-items: flex-start;
+            }
+            .title-logo {
+                width: 52px;
+                height: 52px;
+            }
             .match-row {
                 grid-template-columns: 1fr;
                 align-items: start;
@@ -395,8 +451,20 @@ function formatGroupTeamLabel(string $team): string
             .panel, .nav, .selector, .screen-only { display: none !important; }
             .print-sheet { margin: 0; border-radius: 0; box-shadow: none; page-break-after: always; padding: 0; }
             .print-sheet:last-child { page-break-after: auto; }
+            .title {
+                padding: 8px 10px;
+                gap: 10px;
+            }
+            .title-logo {
+                width: 46px;
+                height: 46px;
+                border-radius: 12px;
+            }
             .title h1 {
-                font-size: 18px;
+                font-size: 24px;
+            }
+            .title p {
+                font-size: 12px;
             }
             .guide {
                 margin-bottom: 7px;
@@ -531,8 +599,11 @@ function formatGroupTeamLabel(string $team): string
             <section class="print-sheet">
                 <header class="sheet-header">
                     <div class="title">
-                        <h1>WK Pool 2026</h1>
-                        <p>Groepsfase voorspellingen</p>
+                        <img src="assets/wk2026-logo.jpg" alt="WK Pool 2026 logo" class="title-logo">
+                        <div class="title-copy">
+                            <h1>WK Pool 2026</h1>
+                            <p>Groepsfase voorspellingen</p>
+                        </div>
                     </div>
                     <div class="meta-block">
                         <div class="meta-line"><strong>Naam</strong><div class="line-box"><?= htmlspecialchars($participant['name'], ENT_QUOTES, 'UTF-8') ?></div></div>
@@ -571,8 +642,6 @@ function formatGroupTeamLabel(string $team): string
                 <div class="guide">
                     <div class="guide-card"><strong>Invullen</strong>Gebruik alleen cijfers. Schrijf één cijfer per vakje, links thuisscore en rechts uitscore.</div>
                     <div class="guide-card"><strong>Ausfüllen</strong>Verwende nur Zahlen. Schreibe pro Kästchen genau eine Zahl, links Heimtore und rechts Auswärtstore.</div>
-                    <div class="guide-card"><strong>Scanvriendelijk</strong>Eén wedstrijd per regel. Laat datum en scorevakjes vrij van extra tekst of markeringen.</div>
-                    <div class="guide-card"><strong>Scanfreundlich</strong>Nur ein Spiel pro Zeile. Lass Datums- und Ergebnisfelder frei von zusätzlichem Text oder Markierungen.</div>
                 </div>
 
                 <div class="matches-two-col">
@@ -605,8 +674,11 @@ function formatGroupTeamLabel(string $team): string
             <section class="print-sheet">
                 <header class="sheet-header">
                     <div class="title">
-                        <h1>WK Pool 2026</h1>
-                        <p>Knock-outmatrix compact</p>
+                        <img src="assets/wk2026-logo.jpg" alt="WK Pool 2026 logo" class="title-logo">
+                        <div class="title-copy">
+                            <h1>WK Pool 2026</h1>
+                            <p>Knock-outmatrix compact</p>
+                        </div>
                     </div>
                     <div class="meta-block">
                         <div class="meta-line"><strong>Naam</strong><div class="line-box"><?= htmlspecialchars($participant['name'], ENT_QUOTES, 'UTF-8') ?></div></div>
