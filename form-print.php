@@ -173,9 +173,56 @@ function formatGroupTeamLabel(string $team): string
             display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin: 0 0 8px;
         }
         .guide-card {
-            border: 1.2px solid #dbe4ee; border-radius: 10px; padding: 5px 7px; font-size: 9px; line-height: 1.2;
+            border: 1.2px solid #dbe4ee;
+            border-radius: 12px;
+            padding: 8px 10px;
+            font-size: 10px;
+            line-height: 1.35;
+            background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
         }
-        .guide-card strong { display: block; margin-bottom: 2px; }
+        .guide-card strong {
+            display: block;
+            margin-bottom: 3px;
+            color: #0f172a;
+        }
+        .intro-rules {
+            border: 1.2px solid #cbd5e1;
+            border-radius: 14px;
+            padding: 12px 14px;
+            margin: 0 0 12px;
+            background: linear-gradient(135deg, #f8fafc 0%, #eef6ff 100%);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.75);
+        }
+        .intro-rules-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+        .intro-rules-grid > div {
+            background: rgba(255,255,255,0.82);
+            border: 1px solid #dbe4ee;
+            border-radius: 12px;
+            padding: 10px 12px;
+        }
+        .intro-rules h2 {
+            margin: 0 0 6px;
+            font-size: 16px;
+            color: #0f172a;
+        }
+        .intro-rules p,
+        .intro-rules li {
+            margin: 0;
+            color: #334155;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+        .intro-rules ul {
+            margin: 8px 0 0 18px;
+            padding: 0;
+        }
+        .intro-rules li + li {
+            margin-top: 4px;
+        }
 
         .matches-two-col {
             display: grid;
@@ -330,7 +377,7 @@ function formatGroupTeamLabel(string $team): string
             .nav { display: grid; grid-template-columns: 1fr; }
             .nav a, .nav button, .selector button { width: 100%; text-align: center; }
             .print-sheet { padding: 14px; border-radius: 14px; }
-            .sheet-header, .guide, .ko-grid3, .matches-two-col { grid-template-columns: 1fr; }
+            .sheet-header, .guide, .ko-grid3, .matches-two-col, .intro-rules-grid { grid-template-columns: 1fr; }
             .match-row {
                 grid-template-columns: 1fr;
                 align-items: start;
@@ -351,11 +398,35 @@ function formatGroupTeamLabel(string $team): string
                 font-size: 18px;
             }
             .guide {
-                margin-bottom: 6px;
+                margin-bottom: 7px;
             }
             .guide-card {
-                font-size: 8px;
-                padding: 4px 6px;
+                font-size: 9px;
+                padding: 6px 8px;
+                border-color: #cbd5e1;
+            }
+            .intro-rules {
+                padding: 8px 10px;
+                margin-bottom: 9px;
+                border-color: #cbd5e1;
+                background: #f8fafc;
+            }
+            .intro-rules-grid {
+                gap: 8px;
+            }
+            .intro-rules-grid > div {
+                padding: 8px 10px;
+                border-color: #dbe4ee;
+                background: #fff;
+            }
+            .intro-rules h2 {
+                font-size: 14px;
+                margin-bottom: 4px;
+            }
+            .intro-rules p,
+            .intro-rules li {
+                font-size: 10px;
+                line-height: 1.4;
             }
             .matches-two-col {
                 display: grid !important;
@@ -465,6 +536,33 @@ function formatGroupTeamLabel(string $team): string
                         <div class="meta-line"><strong>Versie</strong><div class="line-box">Form scan v1</div></div>
                     </div>
                 </header>
+
+                <div class="intro-rules">
+                    <div class="intro-rules-grid">
+                        <div>
+                            <h2>Spelregels (NL)</h2>
+                            <p>Leuk dat je meedoet aan de WK Pool 2026. Vul je voorspellingen duidelijk in en lever het formulier op tijd in.</p>
+                            <ul>
+                                <li>Inleggeld: <strong>€3 per persoon</strong></li>
+                                <li>Prijzenpot: <strong>1e 50%</strong>, <strong>2e 30%</strong>, <strong>3e 20%</strong></li>
+                                <li>Groepsfase: 3 punten voor de juiste tendens, plus 1 punt per exact goed voorspeld doelsaldo per team</li>
+                                <li>Knock-outfase: alleen bonuspunten per correct voorspelde ronde</li>
+                                <li>Na inleveren blijft je formulier definitief</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h2>Spielregeln (DE)</h2>
+                            <p>Schön, dass du bei der WM Pool 2026 mitmachst. Bitte trage deine Tipps gut lesbar ein und gib das Formular rechtzeitig ab.</p>
+                            <ul>
+                                <li>Einsatz: <strong>3 € pro Person</strong></li>
+                                <li>Preistopf: <strong>1. Platz 50%</strong>, <strong>2. Platz 30%</strong>, <strong>3. Platz 20%</strong></li>
+                                <li>Gruppenphase: 3 Punkte für die richtige Tendenz, plus 1 Punkt pro exakt richtig getipptem Torwert je Team</li>
+                                <li>K.-o.-Phase: nur Bonuspunkte pro korrekt vorhergesagter Runde</li>
+                                <li>Nach der Abgabe bleibt dein Formular verbindlich</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="guide">
                     <div class="guide-card"><strong>Invullen</strong>Gebruik alleen cijfers. Schrijf één cijfer per vakje, links thuisscore en rechts uitscore.</div>
