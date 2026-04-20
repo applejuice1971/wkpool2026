@@ -29,7 +29,7 @@ ORDER BY pi.created_at DESC, pi.id DESC
 SQL)->fetchAll();
 ?>
 <?php header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0'); header('Pragma: no-cache'); ?>
-<?= wkPageShellStart('WK Pool 2026 · Ingelezen bestanden', 'home') ?>
+<?= wkPageShellStart('WK Pool 2026 · Ingelezen bestanden', 'imports') ?>
 <div class="container stack">
         <section class="panel">
         <div class="toolbar">

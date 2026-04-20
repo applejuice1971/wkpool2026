@@ -47,7 +47,9 @@ if (isset($_GET['deleted'])) {
 $participants = $pdo->query('SELECT id, name, email, created_at FROM participants ORDER BY created_at DESC')->fetchAll();
 ?>
 <?php header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0'); header('Pragma: no-cache'); ?>
+<?php header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0'); header('Pragma: no-cache'); ?>
 <?= wkPageShellStart('WK Pool 2026 · Deelnemersbeheer', 'participants') ?>
+    <main class="container stack">
         <section class="panel">
             <h1>Deelnemersbeheer</h1>
             <p>Voeg hier deelnemers toe voor de WK-pool.</p>
@@ -110,4 +112,6 @@ $participants = $pdo->query('SELECT id, name, email, created_at FROM participant
             <a href="participants.php" class="active">Deelnemers</a>
             <a href="matches.php">Wedstrijden</a>
         </nav>
+    </main>
 <?= wkPageShellEnd() ?>
+

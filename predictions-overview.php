@@ -28,7 +28,7 @@ ORDER BY p.name ASC, m.match_date ASC, m.id ASC
 SQL)->fetchAll();
 ?>
 <?php header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0'); header('Pragma: no-cache'); ?>
-<?= wkPageShellStart('WK Pool 2026 · Voorspellingen overzicht', 'home') ?>
+<?= wkPageShellStart('WK Pool 2026 · Voorspellingen overzicht', 'predictions') ?>
 <div class="container stack">
         <section class="panel">
         <div class="toolbar">

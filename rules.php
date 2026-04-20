@@ -39,4 +39,6 @@ require __DIR__ . '/lib.php';
                 <li>Eenmaal ingeleverd is het formulier <strong>definitief</strong>.</li>
             </ul>
         </section>
+    </main>
 <?= wkPageShellEnd() ?>
+

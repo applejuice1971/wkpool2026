@@ -124,6 +124,8 @@ function wkPageShellStart(string $title, string $active = 'home', string $accent
         'participants' => ['label' => 'Deelnemers', 'href' => 'participants.php', 'icon' => '👥'],
         'matches' => ['label' => 'Wedstrijden', 'href' => 'matches.php', 'icon' => '🗓️'],
         'print' => ['label' => 'Printformulier', 'href' => 'form-print.php', 'icon' => '🖨️'],
+        'predictions' => ['label' => 'Voorspellingen', 'href' => 'predictions-overview.php', 'icon' => '📊'],
+        'imports' => ['label' => 'Imports', 'href' => 'imports-overview.php', 'icon' => '📥'],
         'rules' => ['label' => 'Regels', 'href' => 'rules.php', 'icon' => '📋'],
     ];
 
@@ -173,11 +175,11 @@ function wkPageShellStart(string $title, string $active = 'home', string $accent
             background: linear-gradient(135deg, var(--bg-1), var(--bg-2));
         }
         .app-shell {
-            width: min(1280px, 100% - 24px);
+            width: min(1220px, 100% - 24px);
             margin: 0 auto;
             padding: 24px 0 40px;
             display: grid;
-            grid-template-columns: 250px minmax(0, 1fr);
+            grid-template-columns: 200px minmax(0, 1fr);
             gap: 20px;
         }
         .side-nav {
@@ -189,8 +191,10 @@ function wkPageShellStart(string $title, string $active = 'home', string $accent
             border-radius: 24px;
             box-shadow: 0 18px 50px rgba(0,0,0,0.28);
             padding: 18px 14px;
-            display: grid;
+            display: flex;
+            flex-direction: column;
             gap: 10px;
+            min-height: calc(100vh - 48px);
             backdrop-filter: blur(10px);
         }
         .side-nav-brand {
@@ -200,14 +204,10 @@ function wkPageShellStart(string $title, string $active = 'home', string $accent
             border-bottom: 1px solid rgba(255,255,255,0.08);
             margin-bottom: 4px;
         }
-        .side-nav-brand strong {
-            font-size: 1.02rem;
-        }
-        .side-nav-brand span {
-            color: var(--muted);
-            font-size: 0.92rem;
-        }
-        .side-nav-link {
+        .side-nav-brand strong { font-size: 1.02rem; }
+        .side-nav-brand span { color: var(--muted); font-size: 0.92rem; }
+        .side-nav-link,
+        .side-nav-toggle {
             display: flex;
             align-items: center;
             gap: 12px;
@@ -218,12 +218,17 @@ function wkPageShellStart(string $title, string $active = 'home', string $accent
             color: var(--text);
             border: 1px solid transparent;
             background: rgba(255,255,255,0.03);
-            transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
         }
-        .side-nav-link:hover {
+        .side-nav-toggle {
+            width: 100%;
+            cursor: pointer;
+            font: inherit;
+            text-align: left;
+        }
+        .side-nav-link:hover,
+        .side-nav-toggle:hover {
             background: rgba(255,255,255,0.06);
             border-color: rgba(255,255,255,0.08);
-            transform: translateX(2px);
         }
         .side-nav-link.active {
             background: var(--accent-soft);
@@ -239,9 +244,7 @@ function wkPageShellStart(string $title, string $active = 'home', string $accent
             font-weight: 700;
             white-space: nowrap;
         }
-        .content-shell {
-            min-width: 0;
-        }
+        .content-shell { min-width: 0; }
         .container {
             width: 100%;
             margin: 0;
@@ -275,15 +278,8 @@ function wkPageShellStart(string $title, string $active = 'home', string $accent
         .primary { background: var(--accent); color: #07140c; }
         .secondary { background: rgba(255,255,255,0.05); color: var(--text); border: 1px solid var(--panel-border); }
         .danger { background: var(--danger); color: white; }
-        form {
-            display: grid;
-            gap: 14px;
-        }
-        .grid-2 {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 14px;
-        }
+        form { display: grid; gap: 14px; }
+        .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
         input, select {
             width: 100%;
             border-radius: 12px;
@@ -292,20 +288,14 @@ function wkPageShellStart(string $title, string $active = 'home', string $accent
             color: var(--text);
             padding: 12px 14px;
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+        table { width: 100%; border-collapse: collapse; }
         th, td {
             text-align: left;
             padding: 12px 10px;
             border-bottom: 1px solid rgba(255,255,255,0.08);
             vertical-align: top;
         }
-        .stack {
-            display: grid;
-            gap: 18px;
-        }
+        .stack { display: grid; gap: 18px; }
         .flash {
             padding: 14px 16px;
             border-radius: 14px;
@@ -313,10 +303,7 @@ function wkPageShellStart(string $title, string $active = 'home', string $accent
             background: rgba(34, 197, 94, 0.12);
             color: #bbf7d0;
         }
-        .warn {
-            background: rgba(245, 158, 11, 0.12);
-            color: #fde68a;
-        }
+        .warn { background: rgba(245, 158, 11, 0.12); color: #fde68a; }
         .small { font-size: .92rem; }
         .badge {
             display: inline-flex;
@@ -345,6 +332,34 @@ function wkPageShellStart(string $title, string $active = 'home', string $accent
             background: rgba(255,255,255,0.04);
             border: 1px solid rgba(255,255,255,0.06);
         }
+        .side-nav-spacer {
+            flex: 1 1 auto;
+            min-height: 12px;
+        }
+        .side-nav-bottom {
+            margin-top: auto;
+        }
+        .side-nav.is-collapsed {
+            width: 84px;
+            padding-inline: 10px;
+        }
+        .side-nav.is-collapsed .side-nav-brand span,
+        .side-nav.is-collapsed .side-nav-text {
+            display: none;
+        }
+        .side-nav.is-collapsed .side-nav-brand {
+            justify-items: center;
+            text-align: center;
+            padding-inline: 0;
+        }
+        .side-nav.is-collapsed .side-nav-link,
+        .side-nav.is-collapsed .side-nav-toggle {
+            justify-content: center;
+            padding: 12px;
+        }
+        .side-nav.is-collapsed .side-nav-icon {
+            width: auto;
+        }
         @media (max-width: 980px) {
             .app-shell {
                 width: min(100% - 16px, 1280px);
@@ -364,7 +379,8 @@ function wkPageShellStart(string $title, string $active = 'home', string $accent
                 text-align: center;
                 padding-inline: 0;
             }
-            .side-nav-link {
+            .side-nav-link,
+            .side-nav-toggle {
                 justify-content: center;
                 padding: 12px;
             }
@@ -454,29 +470,61 @@ function wkPageShellStart(string $title, string $active = 'home', string $accent
                 color: #07140c;
             }
         }
-        @media (max-width: 560px) {
+                @media (max-width: 560px) {
             .app-shell {
-                grid-template-columns: 64px minmax(0, 1fr);
+                grid-template-columns: 200px minmax(0, 1fr);
                 width: min(100% - 12px, 1280px);
             }
             .side-nav {
                 padding: 10px 8px;
                 border-radius: 20px;
             }
-            .mobile-tabbar {
-                left: 78px;
-            }
         }
     </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const nav = document.getElementById('side-nav');
+            const toggle = document.getElementById('side-nav-toggle');
+            if (!nav || !toggle) return;
+
+            const storageKey = 'wkpool-nav-collapsed';
+            const apply = (collapsed) => {
+                nav.classList.toggle('is-collapsed', collapsed);
+                toggle.setAttribute('aria-pressed', collapsed ? 'true' : 'false');
+            };
+
+            const saved = localStorage.getItem(storageKey);
+            if (saved === '1') apply(true);
+            if (saved === '0') apply(false);
+
+            toggle.addEventListener('click', function () {
+                const isMobile = window.innerWidth <= 720;
+                if (isMobile) {
+                    nav.classList.toggle('is-open');
+                    return;
+                }
+                const collapsed = !nav.classList.contains('is-collapsed');
+                apply(collapsed);
+                localStorage.setItem(storageKey, collapsed ? '1' : '0');
+            });
+        });
+    </script>
 </head>
 <body>
     <div class="app-shell">
-        <aside class="side-nav">
+        <aside class="side-nav" id="side-nav">
             <div class="side-nav-brand">
                 <strong>WK Pool</strong>
                 <span>2026 dashboard</span>
             </div>
 {$nav}
+            <div class="side-nav-spacer"></div>
+            <div class="side-nav-bottom">
+                <button type="button" class="side-nav-toggle" id="side-nav-toggle" aria-pressed="false" aria-label="Navigatietekst tonen of verbergen">
+                    <span class="side-nav-icon">↔️</span>
+                    <span class="side-nav-text">Tekst aan/uit</span>
+                </button>
+            </div>
         </aside>
         <div class="content-shell">
             <main class="container stack">

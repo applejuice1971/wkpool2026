@@ -127,4 +127,6 @@ $matches = $pdo->query('SELECT id, stage, match_date, home_team, away_team, stat
             <a href="participants.php">Deelnemers</a>
             <a href="matches.php" class="active">Wedstrijden</a>
         </nav>
+    </main>
 <?= wkPageShellEnd() ?>
+
