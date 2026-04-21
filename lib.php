@@ -179,8 +179,9 @@ function wkPageShellStart(string $title, string $active = 'home', string $accent
             margin: 0 auto;
             padding: 24px 0 40px;
             display: grid;
-            grid-template-columns: 200px minmax(0, 1fr);
+            grid-template-columns: var(--nav-width, 200px) minmax(0, 1fr);
             gap: 20px;
+            transition: grid-template-columns 0.2s ease;
         }
         .side-nav {
             position: sticky;
@@ -343,6 +344,9 @@ function wkPageShellStart(string $title, string $active = 'home', string $accent
             width: 84px;
             padding-inline: 10px;
         }
+        .app-shell.nav-collapsed {
+            --nav-width: 84px;
+        }
         .side-nav.is-collapsed .side-nav-brand span,
         .side-nav.is-collapsed .side-nav-text {
             display: none;
@@ -488,8 +492,12 @@ function wkPageShellStart(string $title, string $active = 'home', string $accent
             if (!nav || !toggle) return;
 
             const storageKey = 'wkpool-nav-collapsed';
+            const shell = document.querySelector('.app-shell');
             const apply = (collapsed) => {
                 nav.classList.toggle('is-collapsed', collapsed);
+                if (shell) {
+                    shell.classList.toggle('nav-collapsed', collapsed);
+                }
                 toggle.setAttribute('aria-pressed', collapsed ? 'true' : 'false');
             };
 

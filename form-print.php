@@ -6,16 +6,12 @@ $participantId = isset($_GET['participant_id']) ? (int) $_GET['participant_id'] 
 
 $participants = $pdo->query('SELECT id, name FROM participants ORDER BY name ASC')->fetchAll();
 $participant = null;
-$matches = [];
+$matches = $pdo->query("SELECT id, stage, match_date, home_team, away_team FROM matches WHERE stage LIKE 'Group %' ORDER BY match_date ASC, id ASC")->fetchAll();
 
 if ($participantId > 0) {
     $stmt = $pdo->prepare('SELECT id, name, email FROM participants WHERE id = :id');
     $stmt->execute([':id' => $participantId]);
     $participant = $stmt->fetch();
-
-    if ($participant) {
-        $matches = $pdo->query("SELECT id, stage, match_date, home_team, away_team FROM matches WHERE stage LIKE 'Group %' ORDER BY match_date ASC, id ASC")->fetchAll();
-    }
 }
 
 $qualifiedTeams = [
@@ -493,29 +489,14 @@ function formatGroupTeamLabel(string $team): string
                 <a href="index.php" class="secondary">← Home</a>
                 <a href="participants.php" class="secondary">Deelnemers</a>
                 <a href="matches.php" class="secondary">Wedstrijden</a>
-                <?php if ($participant): ?><button class="primary" onclick="window.print()">Print formulier</button><?php endif; ?>
+                <button class="primary" onclick="window.print()">Print formulier</button>
             </nav>
             <div class="selector">
                 <h1>Printbaar invulformulier</h1>
                 <p class="help">Groepsfase in 3 kolommen en knock-outfase als matrixbord met landen links en rondes bovenaan.</p>
-                <form method="get">
-                    <div>
-                        <label for="participant_id">Kies deelnemer</label>
-                        <select id="participant_id" name="participant_id" required>
-                            <option value="">Selecteer deelnemer…</option>
-                            <?php foreach ($participants as $item): ?>
-                                <option value="<?= (int) $item['id'] ?>" <?= $participantId === (int) $item['id'] ? 'selected' : '' ?>><?= htmlspecialchars($item['name'], ENT_QUOTES, 'UTF-8') ?></option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    <div><button type="submit" class="primary">Formulier genereren</button></div>
-                </form>
             </div>
         </div>
 
-        <?php if (!$participant): ?>
-            <div class="panel screen-only"><p>Kies hierboven een deelnemer om het formulier te genereren.</p></div>
-        <?php else: ?>
             <section class="print-sheet">
                 <header class="sheet-header">
                     <div class="title">
@@ -523,9 +504,9 @@ function formatGroupTeamLabel(string $team): string
                         <p>Groepsfase voorspellingen</p>
                     </div>
                     <div class="meta-block">
-                        <div class="meta-line"><strong>Naam</strong><div class="line-box"><?= htmlspecialchars($participant['name'], ENT_QUOTES, 'UTF-8') ?></div></div>
-                        <div class="meta-line"><strong>ID</strong><div class="line-box">P-<?= str_pad((string) $participant['id'], 3, '0', STR_PAD_LEFT) ?></div></div>
-                        <div class="meta-line"><strong>Versie</strong><div class="line-box">Form scan v1</div></div>
+                        <div class="meta-line"><strong>Naam</strong><div class="line-box"></div></div>
+                        <div class="meta-line"><strong>E-mail</strong><div class="line-box"></div></div>
+                        <div class="meta-line"><strong>Versie</strong><div class="line-box">Form scan v2</div></div>
                     </div>
                 </header>
 
@@ -537,8 +518,10 @@ function formatGroupTeamLabel(string $team): string
                             <ul>
                                 <li>Inleggeld: <strong>€3 per persoon</strong></li>
                                 <li>Prijzenpot: <strong>1e 50%</strong>, <strong>2e 30%</strong>, <strong>3e 20%</strong></li>
-                                <li>Groepsfase: 3 punten voor de juiste tendens, plus 1 punt per exact goed voorspeld doelsaldo per team</li>
-                                <li>Knock-outfase: alleen bonuspunten per correct voorspelde ronde</li>
+                                <li>Groepsfase: 3 punten voor de juiste tendens, plus 1 punt per exact goed voorspeld aantal goals per team</li>
+                                <li>Knock-outfase: <strong>1/16 finale 2 punten</strong>, <strong>1/8 finale 4 punten</strong>, <strong>1/4 finale 6 punten</strong>, <strong>1/2 finale 8 punten</strong>, <strong>finale 10 punten</strong>, <strong>wereldkampioen 12 punten</strong></li>
+                                <li>In de knock-outmatrix kruis je aan: <strong>32 teams</strong> voor de 1/16 finale, <strong>16 teams</strong> voor de 1/8 finale, <strong>8 teams</strong> voor de kwartfinale, <strong>4 teams</strong> voor de halve finale, <strong>2 teams</strong> voor de finale en <strong>1 team</strong> als wereldkampioen</li>
+                                <li>Tip: begin rechts bij de <strong>wereldkampioen</strong> en werk daarna terug naar links</li>
                                 <li>Na inleveren blijft je formulier definitief</li>
                             </ul>
                         </div>
@@ -548,8 +531,10 @@ function formatGroupTeamLabel(string $team): string
                             <ul>
                                 <li>Einsatz: <strong>3 € pro Person</strong></li>
                                 <li>Preistopf: <strong>1. Platz 50%</strong>, <strong>2. Platz 30%</strong>, <strong>3. Platz 20%</strong></li>
-                                <li>Gruppenphase: 3 Punkte für die richtige Tendenz, plus 1 Punkt pro exakt richtig getipptem Torwert je Team</li>
-                                <li>K.-o.-Phase: nur Bonuspunkte pro korrekt vorhergesagter Runde</li>
+                                <li>Gruppenphase: 3 Punkte für die richtige Tendenz, plus 1 Punkt pro exakt richtig getippter Torzahl je Team</li>
+                                <li>K.-o.-Phase: <strong>Sechzehntelfinale 2 Punkte</strong>, <strong>Achtelfinale 4 Punkte</strong>, <strong>Viertelfinale 6 Punkte</strong>, <strong>Halbfinale 8 Punkte</strong>, <strong>Finale 10 Punkte</strong>, <strong>Weltmeister 12 Punkte</strong></li>
+                                <li>In der K.-o.-Matrix kreuzt du an: <strong>32 Teams</strong> für das Sechzehntelfinale, <strong>16 Teams</strong> für das Achtelfinale, <strong>8 Teams</strong> für das Viertelfinale, <strong>4 Teams</strong> für das Halbfinale, <strong>2 Teams</strong> für das Finale und <strong>1 Team</strong> als Weltmeister</li>
+                                <li>Tipp: Beginne rechts beim <strong>Weltmeister</strong> und arbeite dich dann nach links zurück</li>
                                 <li>Nach der Abgabe bleibt dein Formular verbindlich</li>
                             </ul>
                         </div>
@@ -557,8 +542,8 @@ function formatGroupTeamLabel(string $team): string
                 </div>
 
                 <div class="guide">
-                    <div class="guide-card"><strong>Invullen</strong>Gebruik alleen cijfers. Schrijf één cijfer per vakje, links thuisscore en rechts uitscore.</div>
                     <div class="guide-card"><strong>Scanvriendelijk</strong>Eén wedstrijd per regel. Laat datum en scorevakjes vrij van extra tekst of markeringen.</div>
+                    <div class="guide-card"><strong>Deutsch</strong>Bitte nur Ziffern eintragen. Pro Spiel genau ein Ergebnis, links Heimteam und rechts Auswärtsteam.</div>
                 </div>
 
                 <div class="matches-two-col">
@@ -584,7 +569,7 @@ function formatGroupTeamLabel(string $team): string
 
                 <footer class="page-footer">
                     <span>Schrijf duidelijk met donkere pen. Wedstrijdnummer en teamnamen niet overschrijven.</span>
-                    <span>P-<?= str_pad((string) $participant['id'], 3, '0', STR_PAD_LEFT) ?></span>
+                    <span>WK Pool 2026</span>
                 </footer>
             </section>
 
@@ -595,13 +580,13 @@ function formatGroupTeamLabel(string $team): string
                         <p>Knock-outmatrix compact</p>
                     </div>
                     <div class="meta-block">
-                        <div class="meta-line"><strong>Naam</strong><div class="line-box"><?= htmlspecialchars($participant['name'], ENT_QUOTES, 'UTF-8') ?></div></div>
-                        <div class="meta-line"><strong>ID</strong><div class="line-box">P-<?= str_pad((string) $participant['id'], 3, '0', STR_PAD_LEFT) ?></div></div>
+                        <div class="meta-line"><strong>Naam</strong><div class="line-box"></div></div>
+                        <div class="meta-line"><strong>E-mail</strong><div class="line-box"></div></div>
                         <div class="meta-line"><strong>Doel</strong><div class="line-box">Aankruisen per ronde</div></div>
                     </div>
                 </header>
 
-                <p class="hint">Per regel links een land met KO-voorspellingen en rechts nog een land met dezelfde kolommen.</p>
+                <p class="hint">Kruis per ronde exact het juiste aantal teams aan: 32, 16, 8, 4, 2 en 1. Tip: begin bij de wereldkampioen en werk terug.</p>
 
                 <div class="ko-grid3">
                     <?php foreach ([$koTeamsCol1, $koTeamsCol2, $koTeamsCol3] as $koBlockTeams): ?>
@@ -631,7 +616,6 @@ function formatGroupTeamLabel(string $team): string
                     <span>WK Pool 2026</span>
                 </footer>
             </section>
-        <?php endif; ?>
             </div>
         </div>
 <?= wkPageShellEnd() ?>
