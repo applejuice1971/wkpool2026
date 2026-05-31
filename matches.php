@@ -4,6 +4,7 @@ require __DIR__ . '/lib.php';
 $pdo = wkGetPdo();
 $message = null;
 $messageClass = 'flash';
+$countryOptions = $pdo->query("SELECT id, name_de, is_placeholder FROM countries ORDER BY is_placeholder ASC, name_de ASC")->fetchAll();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $action = $_POST['action'] ?? 'create';
@@ -11,19 +12,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($action === 'create') {
         $stage = trim($_POST['stage'] ?? 'Groepsfase');
         $matchDate = trim($_POST['match_date'] ?? '');
-        $homeTeam = trim($_POST['home_team'] ?? '');
-        $awayTeam = trim($_POST['away_team'] ?? '');
+        $homeCountryId = (int) ($_POST['home_country_id'] ?? 0);
+        $awayCountryId = (int) ($_POST['away_country_id'] ?? 0);
 
-        if ($matchDate === '' || $homeTeam === '' || $awayTeam === '') {
-            $message = 'Datum/tijd, thuisteam en uitteam zijn verplicht.';
+        if ($matchDate === '' || $homeCountryId <= 0 || $awayCountryId <= 0) {
+            $message = 'Datum/tijd, thuisland en uitland zijn verplicht.';
             $messageClass = 'flash warn';
         } else {
-            $stmt = $pdo->prepare('INSERT INTO matches (stage, match_date, home_team, away_team, status) VALUES (:stage, :match_date, :home_team, :away_team, :status)');
+            $stmt = $pdo->prepare('INSERT INTO matches (stage, match_date, home_country_id, away_country_id, status) SELECT :stage, :match_date, ch.id, ca.id, :status FROM countries ch CROSS JOIN countries ca WHERE ch.id = :home_country_id AND ca.id = :away_country_id');
             $stmt->execute([
                 ':stage' => $stage,
                 ':match_date' => date('Y-m-d H:i:s', strtotime($matchDate)),
-                ':home_team' => $homeTeam,
-                ':away_team' => $awayTeam,
+                ':home_country_id' => $homeCountryId,
+                ':away_country_id' => $awayCountryId,
                 ':status' => 'scheduled',
             ]);
             header('Location: matches.php?added=1');
@@ -49,7 +50,8 @@ if (isset($_GET['deleted'])) {
     $message = 'Wedstrijd verwijderd.';
 }
 
-$matches = $pdo->query('SELECT id, stage, match_date, home_team, away_team, status FROM matches ORDER BY match_date ASC')->fetchAll();
+$matches = $pdo->query("SELECT m.id, m.stage, m.match_date, m.status, ch.name_de AS home_country_name, ca.name_de AS away_country_name FROM matches m INNER JOIN countries ch ON ch.id = m.home_country_id INNER JOIN countries ca ON ca.id = m.away_country_id ORDER BY m.match_date ASC")->fetchAll();
+$groupMatchNumbers = wkGroupMatchNumberMap($pdo);
 ?>
 <?php header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0'); header('Pragma: no-cache'); ?>
 <?php header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0'); header('Pragma: no-cache'); ?>
@@ -73,12 +75,22 @@ $matches = $pdo->query('SELECT id, stage, match_date, home_team, away_team, stat
                         <input id="match_date" name="match_date" type="datetime-local" required>
                     </div>
                     <div>
-                        <label for="home_team">Thuisteam</label>
-                        <input id="home_team" name="home_team" type="text" placeholder="Bijv. Nederland" required>
+                        <label for="home_country_id">Thuisland</label>
+                        <select id="home_country_id" name="home_country_id" required>
+                            <option value="">Kies thuisland</option>
+                            <?php foreach ($countryOptions as $country): ?>
+                                <option value="<?= (int) $country['id'] ?>"><?= htmlspecialchars((string) $country['name_de'], ENT_QUOTES, 'UTF-8') ?><?= !empty($country['is_placeholder']) ? ' (placeholder)' : '' ?></option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
                     <div>
-                        <label for="away_team">Uitteam</label>
-                        <input id="away_team" name="away_team" type="text" placeholder="Bijv. Brazilië" required>
+                        <label for="away_country_id">Uitland</label>
+                        <select id="away_country_id" name="away_country_id" required>
+                            <option value="">Kies uitland</option>
+                            <?php foreach ($countryOptions as $country): ?>
+                                <option value="<?= (int) $country['id'] ?>"><?= htmlspecialchars((string) $country['name_de'], ENT_QUOTES, 'UTF-8') ?><?= !empty($country['is_placeholder']) ? ' (placeholder)' : '' ?></option>
+                            <?php endforeach; ?>
+                        </select>
                     </div>
                 </div>
                 <div>
@@ -95,6 +107,7 @@ $matches = $pdo->query('SELECT id, stage, match_date, home_team, away_team, stat
                 <table>
                     <thead>
                         <tr>
+                            <th>#</th>
                             <th>Fase</th>
                             <th>Wedstrijd</th>
                             <th>Datum</th>
@@ -105,8 +118,9 @@ $matches = $pdo->query('SELECT id, stage, match_date, home_team, away_team, stat
                     <tbody>
                         <?php foreach ($matches as $match): ?>
                             <tr>
+                                <td data-label="#"><?php if (str_starts_with((string) $match['stage'], 'Group ')): ?>#<?= $groupMatchNumbers[(int) $match['id']] ?? (int) $match['id'] ?><?php else: ?>#<?= (int) $match['id'] ?><?php endif; ?></td>
                                 <td data-label="Fase"><?= htmlspecialchars($match['stage'], ENT_QUOTES, 'UTF-8') ?></td>
-                                <td data-label="Wedstrijd"><?= htmlspecialchars($match['home_team'] . ' - ' . $match['away_team'], ENT_QUOTES, 'UTF-8') ?></td>
+                                <td data-label="Wedstrijd"><?= htmlspecialchars(wkMatchLabel($match), ENT_QUOTES, 'UTF-8') ?></td>
                                 <td data-label="Datum"><?= htmlspecialchars($match['match_date'], ENT_QUOTES, 'UTF-8') ?></td>
                                 <td data-label="Status"><?= htmlspecialchars($match['status'], ENT_QUOTES, 'UTF-8') ?></td>
                                 <td data-label="Actie">

@@ -24,11 +24,13 @@ require __DIR__ . '/lib.php';
             <h2>Knock-outfase</h2>
             <p>Voor losse uitslagen in de knock-outfase worden geen aparte punten toegekend. De punten in de knock-outfase worden verdiend via het juist voorspellen van welke landen iedere ronde halen.</p>
             <ul>
-                <li><strong>Achtste finale:</strong> 2 punten</li>
-                <li><strong>Kwartfinale:</strong> 4 punten</li>
-                <li><strong>Halve finale:</strong> 6 punten</li>
-                <li><strong>Finale:</strong> 8 punten</li>
-                <li><strong>Wereldkampioen:</strong> 10 punten</li>
+                <li><strong>1/16 finale:</strong> 2 punten</li>
+                <li><strong>1/8 finale:</strong> 4 punten</li>
+                <li><strong>Kwartfinale:</strong> 6 punten</li>
+                <li><strong>Halve finale:</strong> 8 punten</li>
+                <li><strong>Finale:</strong> 10 punten</li>
+                <li><strong>3e plaats:</strong> 5 punten (1 land)</li>
+                <li><strong>Wereldkampioen:</strong> 15 punten</li>
             </ul>
         </section>
 

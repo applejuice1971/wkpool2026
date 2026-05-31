@@ -2,7 +2,6 @@
 require __DIR__ . '/lib.php';
 
 $title = 'WK Pool 2026';
-$subtitle = 'Welkom bij jouw WK-poule voor 2026';
 
 function loadEnv(string $path): array
 {
@@ -79,11 +78,7 @@ if (($env['DB_CONNECTION'] ?? '') === 'mysql') {
     $stats['Database'] = 'Config check';
 }
 
-$features = [
-    ['title' => '👥 Deelnemers', 'text' => 'Beheer snel alle spelers in je poule.'],
-    ['title' => '🗓️ Wedstrijden', 'text' => 'Het volledige WK-schema staat al klaar in de database.'],
-    ['title' => '🏆 Stand', 'text' => 'Bouw hierna voorspellingen en de ranking erbovenop.'],
-];
+$qualifiedTeams = $pdo ? wkQualifiedTeams($pdo) : [];
 
 $nextSteps = [
     'Deelnemers toevoegen',
@@ -110,20 +105,6 @@ $nextSteps = [
         .hero-main { padding: 36px; }
         .hero-side,
         .menu-panel { padding: 28px; }
-        .tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(34, 197, 94, 0.14);
-            color: #bbf7d0;
-            border: 1px solid rgba(34,197,94,0.22);
-            padding: 8px 14px;
-            border-radius: 999px;
-            font-size: 0.92rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            max-width: 100%;
-        }
         .hero-brand {
             display: flex;
             align-items: center;
@@ -164,11 +145,12 @@ $nextSteps = [
         }
         .button {
             display: inline-block;
-            padding: 13px 18px;
-            border-radius: 14px;
+            padding: 10px 14px;
+            border-radius: 12px;
             text-decoration: none;
             font-weight: 700;
             text-align: center;
+            font-size: 0.95rem;
         }
         .button-primary,
         .button-secondary {
@@ -202,6 +184,45 @@ $nextSteps = [
         .card { padding: 22px; min-width: 0; }
         .card h2 { margin: 0 0 8px; font-size: 1.05rem; }
         .card p { margin: 0; color: #cbd5e1; line-height: 1.55; }
+        .flags-panel {
+            margin-top: 20px;
+            padding: 24px 26px;
+        }
+        .flags-panel h2 {
+            margin: 0 0 10px;
+        }
+        .flags-copy {
+            margin: 0 0 18px;
+            color: #d9f99d;
+        }
+        .flags-container {
+            padding: 18px;
+            border-radius: 20px;
+            background: rgba(10, 16, 32, 0.34);
+            border: 1px solid rgba(120,255,180,0.18);
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 0 24px rgba(57, 255, 20, 0.08);
+        }
+        .flags-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+        }
+        .flag-pill {
+            width: 54px;
+            height: 54px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(120,255,180,0.16);
+            box-shadow: 0 0 18px rgba(57, 255, 20, 0.08);
+        }
+        .flag-emoji {
+            font-size: 1.9rem;
+            line-height: 1;
+        }
         .next {
             margin-top: 26px;
             padding: 28px;
@@ -281,9 +302,7 @@ $nextSteps = [
                 <div class="hero-brand">
                     <img src="assets/wk2026-logo.jpg" alt="WK 2026 logo">
                     <div class="hero-copy">
-                        <div class="tag">⚽ Welkomsscherm</div>
                         <h1><?= htmlspecialchars($title, ENT_QUOTES, 'UTF-8') ?></h1>
-                        <p class="subtitle"><?= htmlspecialchars($subtitle, ENT_QUOTES, 'UTF-8') ?>. Dit is de startpagina van jouw poolsite. Vanaf hier kunnen we deelnemers, wedstrijden, voorspellingen en de live ranglijst stap voor stap toevoegen.</p>
                     </div>
                 </div>
             </div>
@@ -308,27 +327,19 @@ $nextSteps = [
             </aside>
         </section>
 
-        <section class="dashboard-row">
-            <div class="panel menu-panel">
-                <div class="actions">
-                    <a class="button button-primary" href="participants.php">Deelnemers beheren</a>
-                    <a class="button button-secondary" href="matches.php">Wedstrijden beheren</a>
-                    <a class="button button-secondary" href="form-print.php">Printformulier</a>
-                    <a class="button button-secondary" href="predictions-overview.php">Voorspellingen</a>
-                    <a class="button button-secondary" href="imports-overview.php">Imports</a>
-                    <a class="button button-secondary" href="rules.php">Regels</a>
-                    <a class="button button-secondary" href="#volgende-stappen">Verder bouwen</a>
+
+        <section class="panel flags-panel">
+            <h2>Deelnemende landen</h2>
+            <p class="flags-copy">Alle vlaggen samen in één container.</p>
+            <div class="flags-container">
+                <div class="flags-grid">
+                    <?php foreach ($qualifiedTeams as $team): ?>
+                        <span class="flag-pill" title="<?= htmlspecialchars((string) ($team['name_de'] ?? ''), ENT_QUOTES, 'UTF-8') ?>" aria-label="<?= htmlspecialchars((string) ($team['name_de'] ?? ''), ENT_QUOTES, 'UTF-8') ?>">
+                            <span class="flag-emoji"><?= htmlspecialchars((string) (($team['flag_emoji'] ?? '') !== '' ? $team['flag_emoji'] : wkFlagEmoji((string) ($team['name_en'] ?? ''))), ENT_QUOTES, 'UTF-8') ?></span>
+                        </span>
+                    <?php endforeach; ?>
                 </div>
             </div>
-        </section>
-
-        <section class="cards">
-            <?php foreach ($features as $feature): ?>
-                <article class="panel card">
-                    <h2><?= htmlspecialchars($feature['title'], ENT_QUOTES, 'UTF-8') ?></h2>
-                    <p><?= htmlspecialchars($feature['text'], ENT_QUOTES, 'UTF-8') ?></p>
-                </article>
-            <?php endforeach; ?>
         </section>
 
         <section class="panel next" id="volgende-stappen">

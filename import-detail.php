@@ -34,16 +34,19 @@ $rowsStmt = $pdo->prepare(<<<SQL
 SELECT
     pir.*, 
     m.stage,
-    m.home_team,
-    m.away_team,
+    ch.name_de AS home_country_name,
+    ca.name_de AS away_country_name,
     m.match_date
 FROM prediction_import_rows pir
 LEFT JOIN matches m ON m.id = pir.match_id
+LEFT JOIN countries ch ON ch.id = m.home_country_id
+LEFT JOIN countries ca ON ca.id = m.away_country_id
 WHERE pir.import_id = ?
 ORDER BY pir.id ASC
 SQL);
 $rowsStmt->execute([$importId]);
 $rows = $rowsStmt->fetchAll();
+$groupMatchNumbers = wkGroupMatchNumberMap($pdo);
 ?>
 <?php header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0'); header('Pragma: no-cache'); ?>
 <?= wkPageShellStart('WK Pool 2026 · Import detail', 'home') ?>
@@ -54,7 +57,11 @@ $rows = $rowsStmt->fetchAll();
                 <h1>Import #<?= (int) $import['id'] ?></h1>
                 <p class="small">Detailoverzicht van één ingelezen bestand en de herkende regels.</p>
             </div>
-            <span class="badge <?= htmlspecialchars(wkStatusBadgeClass($import['status']), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($import['status'], ENT_QUOTES, 'UTF-8') ?></span>
+            <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+                <a class="secondary" href="ko-import-ocr-helper.php?import_id=<?= (int) $import['id'] ?>">KO OCR helper</a>
+                <a class="secondary" href="ko-import-review.php?import_id=<?= (int) $import['id'] ?>">KO review / OCR prefill</a>
+                <span class="badge <?= htmlspecialchars(wkStatusBadgeClass($import['status']), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars($import['status'], ENT_QUOTES, 'UTF-8') ?></span>
+            </div>
         </div>
 
         <div class="grid-2">
@@ -113,7 +120,8 @@ $rows = $rowsStmt->fetchAll();
                             <td data-label="Ruwe regel"><?= htmlspecialchars($row['raw_label'], ENT_QUOTES, 'UTF-8') ?></td>
                             <td data-label="Wedstrijd">
                                 <?php if (!empty($row['match_id'])): ?>
-                                    <strong><?= htmlspecialchars($row['home_team'] . ' - ' . $row['away_team'], ENT_QUOTES, 'UTF-8') ?></strong><br>
+                                    <?php $displayNumber = (str_starts_with((string) ($row['stage'] ?? ''), 'Group ') ? ($groupMatchNumbers[(int) $row['match_id']] ?? (int) $row['match_id']) : (int) $row['match_id']); ?>
+                                    <strong>#<?= $displayNumber ?> <?= htmlspecialchars(wkMatchLabel($row), ENT_QUOTES, 'UTF-8') ?></strong><br>
                                     <span class="small"><?= htmlspecialchars((string) $row['stage'], ENT_QUOTES, 'UTF-8') ?> · <?= htmlspecialchars((string) $row['match_date'], ENT_QUOTES, 'UTF-8') ?></span>
                                 <?php else: ?>
                                     <span class="small">Nog niet gematcht</span>

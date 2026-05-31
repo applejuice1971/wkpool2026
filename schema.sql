@@ -7,20 +7,34 @@ CREATE TABLE IF NOT EXISTS participants (
     UNIQUE KEY uniq_participants_email (email)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS countries (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    name_de VARCHAR(120) NOT NULL,
+    name_en VARCHAR(120) NULL,
+    flag_emoji VARCHAR(16) NULL,
+    is_placeholder TINYINT(1) NOT NULL DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY uniq_countries_name_de (name_de),
+    UNIQUE KEY uniq_countries_name_en (name_en)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 CREATE TABLE IF NOT EXISTS matches (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     external_id VARCHAR(64) NULL,
     stage VARCHAR(64) NOT NULL,
     match_date DATETIME NOT NULL,
-    home_team VARCHAR(120) NOT NULL,
-    away_team VARCHAR(120) NOT NULL,
+    home_country_id INT UNSIGNED NOT NULL,
+    away_country_id INT UNSIGNED NOT NULL,
     home_score TINYINT UNSIGNED NULL,
     away_score TINYINT UNSIGNED NULL,
     status ENUM('scheduled','finished') NOT NULL DEFAULT 'scheduled',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     UNIQUE KEY uniq_matches_external_id (external_id),
-    KEY idx_matches_match_date (match_date)
+    KEY idx_matches_match_date (match_date),
+    CONSTRAINT fk_matches_home_country FOREIGN KEY (home_country_id) REFERENCES countries(id) ON DELETE RESTRICT,
+    CONSTRAINT fk_matches_away_country FOREIGN KEY (away_country_id) REFERENCES countries(id) ON DELETE RESTRICT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS predictions (
@@ -29,6 +43,7 @@ CREATE TABLE IF NOT EXISTS predictions (
     match_id INT UNSIGNED NOT NULL,
     predicted_home_score TINYINT UNSIGNED NOT NULL,
     predicted_away_score TINYINT UNSIGNED NOT NULL,
+    review_status ENUM('0%','50%','99%','OK') NOT NULL DEFAULT 'OK',
     points INT UNSIGNED NOT NULL DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

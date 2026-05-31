@@ -33,19 +33,22 @@ $rows = $rowsStmt->fetchAll();
 $pdo->beginTransaction();
 try {
     $upsert = $pdo->prepare(
-        'INSERT INTO predictions (participant_id, match_id, predicted_home_score, predicted_away_score, points) '
-        . 'VALUES (?, ?, ?, ?, 0) '
-        . 'ON DUPLICATE KEY UPDATE predicted_home_score = VALUES(predicted_home_score), predicted_away_score = VALUES(predicted_away_score), updated_at = CURRENT_TIMESTAMP'
+        'INSERT INTO predictions (participant_id, match_id, predicted_home_score, predicted_away_score, review_status, points) '
+        . 'VALUES (?, ?, ?, ?, ?, 0) '
+        . 'ON DUPLICATE KEY UPDATE predicted_home_score = VALUES(predicted_home_score), predicted_away_score = VALUES(predicted_away_score), review_status = VALUES(review_status), updated_at = CURRENT_TIMESTAMP'
     );
 
     $rowUpdate = $pdo->prepare("UPDATE prediction_import_rows SET status = 'imported' WHERE id = ?");
 
     foreach ($rows as $row) {
+        $confidence = isset($row['confidence']) ? (float) $row['confidence'] : 0.0;
+        $reviewStatus = $confidence >= 99 ? '99%' : ($confidence >= 50 ? '50%' : '0%');
         $upsert->execute([
             (int) $import['participant_id'],
             (int) $row['match_id'],
             (int) $row['predicted_home_score'],
             (int) $row['predicted_away_score'],
+            $reviewStatus,
         ]);
         $rowUpdate->execute([(int) $row['id']]);
     }

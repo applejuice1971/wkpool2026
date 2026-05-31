@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="394" viewBox="0 0 1000 394" role="img" aria-labelledby="title desc">
+  <title id="title">K.-o.-Plan FIFA WM 2026</title>
+  <desc id="desc">K.-o.-Plan der FIFA Fussball-WM 2026.</desc>
+  <defs>
+    <style>
+      :root{--ink:#10243f;--muted:#607086;--line:#9aa9bc;--r32:#e9f6ff;--r16:#eef8ef;--qf:#fff6df;--sf:#f5ecff;--final:#006bff;--bronze:#f7f2ea}
+      .bg{fill:#f7f9fc}.title{font:800 24px Arial,sans-serif;fill:var(--ink)}.sub{font:12px Arial,sans-serif;fill:var(--muted)}
+      .hdr{font:700 11px Arial,sans-serif;fill:#34445c;letter-spacing:.05em}
+      .box{stroke:#8798ae;stroke-width:1;rx:5}.r32{fill:var(--r32)}.r16{fill:var(--r16)}.qf{fill:var(--qf)}.sf{fill:var(--sf)}.final{fill:var(--final);stroke:#10243f}.bronze{fill:var(--bronze)}
+      .txt{font:700 12px Arial,sans-serif;fill:var(--ink)}.small{font:700 10px Arial,sans-serif;fill:var(--ink)}
+      .white{font:800 13px Arial,sans-serif;fill:#fff}.path{fill:none;stroke:var(--line);stroke-width:1}.source{font:10px Arial,sans-serif;fill:var(--muted)}
+    </style>
+  </defs>
+  <rect class="bg" width="1000" height="394"/>
+
+  <g transform="translate(0,-36)">
+  <text class="hdr" x="24" y="72">R32</text><text class="hdr" x="134" y="72">R16</text><text class="hdr" x="254" y="72">VIERTEL</text><text class="hdr" x="374" y="72">HALB</text>
+  <text class="hdr" x="568" y="72">HALB</text><text class="hdr" x="688" y="72">VIERTEL</text><text class="hdr" x="808" y="72">R16</text><text class="hdr" x="918" y="72">R32</text>
+
+  <!-- Connectors left -->
+  <path class="path" d="M108 92H122V106H132M108 122H122V106M216 106H242V150H252M108 152H122V178H132M108 182H122V178M216 178H242V150M336 150H362V220H372M108 232H122V262H132M108 262H122M216 262H242V306H252M108 292H122V334H132M108 322H122V334M216 334H242V306M336 306H362V220M456 220H485V250H462"/>
+  <!-- Connectors right -->
+  <path class="path" d="M892 92H878V106H868M892 122H878V106M784 106H758V150H748M892 152H878V178H868M892 182H878V178M784 178H758V150M664 150H638V220H628M892 232H878V262H868M892 262H878M784 262H758V306H748M892 292H878V334H868M892 322H878V334M784 334H758V306M664 306H638V220M544 220H515V250H538"/>
+
+  <!-- Left R32 -->
+  <g transform="translate(24,80)"><rect class="box r32" width="84" height="26"/><text class="small" x="42" y="17" text-anchor="middle">E1-3A/B/C/D/F</text></g>
+  <g transform="translate(24,110)"><rect class="box r32" width="84" height="26"/><text class="small" x="42" y="17" text-anchor="middle">I1-3C/D/F/G/H</text></g>
+  <g transform="translate(24,140)"><rect class="box r32" width="84" height="26"/><text class="txt" x="42" y="17" text-anchor="middle">A2-B2</text></g>
+  <g transform="translate(24,170)"><rect class="box r32" width="84" height="26"/><text class="txt" x="42" y="17" text-anchor="middle">F1-C2</text></g>
+  <g transform="translate(24,220)"><rect class="box r32" width="84" height="26"/><text class="txt" x="42" y="17" text-anchor="middle">K2-L2</text></g>
+  <g transform="translate(24,250)"><rect class="box r32" width="84" height="26"/><text class="txt" x="42" y="17" text-anchor="middle">H1-J2</text></g>
+  <g transform="translate(24,280)"><rect class="box r32" width="84" height="26"/><text class="small" x="42" y="17" text-anchor="middle">D1-3B/E/F/I/J</text></g>
+  <g transform="translate(24,310)"><rect class="box r32" width="84" height="26"/><text class="small" x="42" y="17" text-anchor="middle">G1-3A/E/H/I/J</text></g>
+
+  <!-- Left R16/QF/SF -->
+  <g transform="translate(132,93)"><rect class="box r16" width="84" height="26"/></g>
+  <g transform="translate(132,165)"><rect class="box r16" width="84" height="26"/></g>
+  <g transform="translate(132,249)"><rect class="box r16" width="84" height="26"/></g>
+  <g transform="translate(132,321)"><rect class="box r16" width="84" height="26"/></g>
+  <g transform="translate(252,137)"><rect class="box qf" width="84" height="26"/></g>
+  <g transform="translate(252,293)"><rect class="box qf" width="84" height="26"/></g>
+  <g transform="translate(372,207)"><rect class="box sf" width="84" height="26"/></g>
+
+  <!-- Right R32 -->
+  <g transform="translate(892,80)"><rect class="box r32" width="84" height="26"/><text class="txt" x="42" y="17" text-anchor="middle">C1-F2</text></g>
+  <g transform="translate(892,110)"><rect class="box r32" width="84" height="26"/><text class="txt" x="42" y="17" text-anchor="middle">E2-I2</text></g>
+  <g transform="translate(892,140)"><rect class="box r32" width="84" height="26"/><text class="small" x="42" y="17" text-anchor="middle">A1-3C/E/F/H/I</text></g>
+  <g transform="translate(892,170)"><rect class="box r32" width="84" height="26"/><text class="small" x="42" y="17" text-anchor="middle">L1-3E/H/I/J/K</text></g>
+  <g transform="translate(892,220)"><rect class="box r32" width="84" height="26"/><text class="txt" x="42" y="17" text-anchor="middle">J1-H2</text></g>
+  <g transform="translate(892,250)"><rect class="box r32" width="84" height="26"/><text class="txt" x="42" y="17" text-anchor="middle">D2-G2</text></g>
+  <g transform="translate(892,280)"><rect class="box r32" width="84" height="26"/><text class="small" x="42" y="17" text-anchor="middle">B1-3E/F/G/I/J</text></g>
+  <g transform="translate(892,310)"><rect class="box r32" width="84" height="26"/><text class="small" x="42" y="17" text-anchor="middle">K1-3D/E/I/J/L</text></g>
+
+  <!-- Right R16/QF/SF -->
+  <g transform="translate(784,93)"><rect class="box r16" width="84" height="26"/></g>
+  <g transform="translate(784,165)"><rect class="box r16" width="84" height="26"/></g>
+  <g transform="translate(784,249)"><rect class="box r16" width="84" height="26"/></g>
+  <g transform="translate(784,321)"><rect class="box r16" width="84" height="26"/></g>
+  <g transform="translate(664,137)"><rect class="box qf" width="84" height="26"/></g>
+  <g transform="translate(664,293)"><rect class="box qf" width="84" height="26"/></g>
+  <g transform="translate(544,207)"><rect class="box sf" width="84" height="26"/></g>
+
+  <!-- Third place and final -->
+  <g transform="translate(462,182)"><rect class="box bronze" width="76" height="28"/><text class="small" x="38" y="18" text-anchor="middle">PLATZ 3</text></g>
+  <g transform="translate(462,235)"><rect class="box final" width="76" height="30" fill="#006bff"/><text class="white" x="38" y="20" text-anchor="middle">FINALE</text></g>
+
+  <text class="source" x="24" y="410">Quelle: FIFA match schedule.</text>
+  </g>
+</svg>
