@@ -481,18 +481,23 @@ function wkPointsForPrediction(?int $homeScore, ?int $awayScore, int $predictedH
         return 0;
     }
 
-    if ($homeScore === $predictedHome && $awayScore === $predictedAway) {
-        return 5;
-    }
-
     $actualOutcome = wkResultOutcome($homeScore, $awayScore);
     $predictedOutcome = wkResultOutcome($predictedHome, $predictedAway);
+    $points = 0;
 
     if ($actualOutcome === $predictedOutcome) {
-        return 3;
+        $points += 3;
     }
 
-    return 0;
+    if ($homeScore === $predictedHome) {
+        $points += 1;
+    }
+
+    if ($awayScore === $predictedAway) {
+        $points += 1;
+    }
+
+    return min($points, 5);
 }
 
 function wkRecalculatePredictionPoints(PDO $pdo): void

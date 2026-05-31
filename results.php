@@ -23,28 +23,39 @@ $groupMatches = $pdo->query(
 $groupMatchNumbers = wkGroupMatchNumberMap($pdo);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    foreach ($rounds as $roundKey => $roundLabel) {
-        $selected = array_values(array_unique(array_filter(array_map('trim', (array) ($_POST['results'][$roundKey] ?? [])))));
-        $limit = (int) ($roundLimits[$roundKey] ?? 0);
-        if (count($selected) !== $limit) {
-            $message = $roundLabel . ' moet precies ' . $limit . ' landen bevatten.';
-            $messageClass = 'flash warn';
-            break;
-        }
-        $delete = $pdo->prepare('DELETE FROM ko_predictions WHERE participant_id = 1 AND round_key = :round_key');
-        $delete->execute([':round_key' => $roundKey]);
-        $insert = $pdo->prepare("INSERT INTO ko_predictions (participant_id, round_key, team_name, review_status) VALUES (1, :round_key, :team_name, 'OK')");
-        foreach ($selected as $teamName) {
-            $insert->execute([
-                ':round_key' => $roundKey,
-                ':team_name' => $teamName,
-            ]);
+    $saveKoResults = isset($_POST['save_ko_results']);
+    $saveSingleGroupMatch = isset($_POST['save_group_match_id']);
+    $saveAllGroupResults = isset($_POST['save_group_results']);
+
+    if ($saveKoResults) {
+        foreach ($rounds as $roundKey => $roundLabel) {
+            $selected = array_values(array_unique(array_filter(array_map('trim', (array) ($_POST['results'][$roundKey] ?? [])))));
+            $limit = (int) ($roundLimits[$roundKey] ?? 0);
+            if (count($selected) !== $limit) {
+                $message = $roundLabel . ' moet precies ' . $limit . ' landen bevatten.';
+                $messageClass = 'flash warn';
+                break;
+            }
+            $delete = $pdo->prepare('DELETE FROM ko_predictions WHERE participant_id = 1 AND round_key = :round_key');
+            $delete->execute([':round_key' => $roundKey]);
+            $insert = $pdo->prepare("INSERT INTO ko_predictions (participant_id, round_key, team_name, review_status) VALUES (1, :round_key, :team_name, 'OK')");
+            foreach ($selected as $teamName) {
+                $insert->execute([
+                    ':round_key' => $roundKey,
+                    ':team_name' => $teamName,
+                ]);
+            }
         }
     }
 
-    if ($message === null && isset($_POST['group_results'])) {
+    if ($message === null && ($saveSingleGroupMatch || $saveAllGroupResults) && isset($_POST['group_results'])) {
         $updateGroup = $pdo->prepare("UPDATE matches SET home_score = :home_score, away_score = :away_score, status = :status WHERE id = :id");
+        $requestedMatchId = $saveSingleGroupMatch ? (int) $_POST['save_group_match_id'] : null;
         foreach ((array) $_POST['group_results'] as $matchId => $values) {
+            $matchId = (int) $matchId;
+            if ($requestedMatchId !== null && $matchId !== $requestedMatchId) {
+                continue;
+            }
             $homeScoreRaw = trim((string) ($values['home_score'] ?? ''));
             $awayScoreRaw = trim((string) ($values['away_score'] ?? ''));
             if ($homeScoreRaw === '' || $awayScoreRaw === '') {
@@ -52,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     ':home_score' => null,
                     ':away_score' => null,
                     ':status' => 'scheduled',
-                    ':id' => (int) $matchId,
+                    ':id' => $matchId,
                 ]);
                 continue;
             }
@@ -65,20 +76,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ':home_score' => (int) $homeScoreRaw,
                 ':away_score' => (int) $awayScoreRaw,
                 ':status' => 'finished',
-                ':id' => (int) $matchId,
+                ':id' => $matchId,
             ]);
         }
     }
 
     if ($message === null) {
         wkRecalculatePredictionPoints($pdo);
-        header('Location: results.php?saved=1');
+        $savedSection = $saveKoResults ? 'ko' : 'group';
+        header('Location: results.php?saved=' . $savedSection);
         exit;
     }
 }
 
 if (isset($_GET['saved'])) {
-    $message = 'KO-resultaten opgeslagen en scores opnieuw berekend.';
+    $message = match ((string) $_GET['saved']) {
+        'group' => 'Groepsuitslag opgeslagen en scores opnieuw berekend.',
+        'ko' => 'KO-resultaten opgeslagen en scores opnieuw berekend.',
+        default => 'Wijzigingen opgeslagen en scores opnieuw berekend.',
+    };
 }
 
 $currentResults = [];
@@ -114,6 +130,7 @@ foreach ($stmt->fetchAll() as $row) {
                                 <th>Wedstrijd</th>
                                 <th>Datum</th>
                                 <th>Uitslag</th>
+                                <th>Actie</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -139,6 +156,9 @@ foreach ($stmt->fetchAll() as $row) {
                                                 <?php endfor; ?>
                                             </select>
                                         </div>
+                                    </td>
+                                    <td>
+                                        <button type="submit" name="save_group_match_id" value="<?= (int) $match['id'] ?>" class="primary" style="width:auto;">Save</button>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -168,7 +188,7 @@ foreach ($stmt->fetchAll() as $row) {
                 <?php endforeach; ?>
             </div>
             <div>
-                <button type="submit" class="primary" style="width:auto;">KO-resultaten opslaan</button>
+                <button type="submit" name="save_ko_results" value="1" class="primary" style="width:auto;">KO-resultaten opslaan</button>
             </div>
         </form>
     </section>
