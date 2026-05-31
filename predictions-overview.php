@@ -213,11 +213,11 @@ function sortLink(array $overrides = []): string
                         <th>Actie</th>
                         <th><a href="<?= htmlspecialchars(sortLink(['sort' => 'match_label', 'dir' => $sort === 'match_label' && $dir === 'asc' ? 'desc' : 'asc']) , ENT_QUOTES, 'UTF-8') ?>">Wedstrijd</a></th>
                         <th><a href="<?= htmlspecialchars(sortLink(['sort' => 'participant_name', 'dir' => $sort === 'participant_name' && $dir === 'asc' ? 'desc' : 'asc']) , ENT_QUOTES, 'UTF-8') ?>">Deelnemer</a></th>
-                        <th><a href="<?= htmlspecialchars(sortLink(['sort' => 'stage', 'dir' => $sort === 'stage' && $dir === 'asc' ? 'desc' : 'asc']) , ENT_QUOTES, 'UTF-8') ?>">Groep/fase</a></th>
+                        <th><a href="<?= htmlspecialchars(sortLink(['sort' => 'stage', 'dir' => $sort === 'stage' && $dir === 'asc' ? 'desc' : 'asc']) , ENT_QUOTES, 'UTF-8') ?>">Gr</a></th>
                         <th><a href="<?= htmlspecialchars(sortLink(['sort' => 'match_date', 'dir' => $sort === 'match_date' && $dir === 'asc' ? 'desc' : 'asc']) , ENT_QUOTES, 'UTF-8') ?>">Datum</a></th>
-                        <th><a href="<?= htmlspecialchars(sortLink(['sort' => 'prediction', 'dir' => $sort === 'prediction' && $dir === 'asc' ? 'desc' : 'asc']) , ENT_QUOTES, 'UTF-8') ?>">Voorspelling</a></th>
+                        <th><a href="<?= htmlspecialchars(sortLink(['sort' => 'prediction', 'dir' => $sort === 'prediction' && $dir === 'asc' ? 'desc' : 'asc']) , ENT_QUOTES, 'UTF-8') ?>">Vrsp</a></th>
                         <th>Status</th>
-                        <th><a href="<?= htmlspecialchars(sortLink(['sort' => 'points', 'dir' => $sort === 'points' && $dir === 'asc' ? 'desc' : 'asc']) , ENT_QUOTES, 'UTF-8') ?>">Punten</a></th>
+                        <th><a href="<?= htmlspecialchars(sortLink(['sort' => 'points', 'dir' => $sort === 'points' && $dir === 'asc' ? 'desc' : 'asc']) , ENT_QUOTES, 'UTF-8') ?>">Pt</a></th>
                     </tr>
                     <tr class="filter-row">
                         <th></th>
@@ -241,9 +241,9 @@ function sortLink(array $overrides = []): string
                         </th>
                         <th>
                             <select name="stage" form="prediction-filters">
-                                <option value="">Alle groepen/fases</option>
+                                <option value="">Alle</option>
                                 <?php foreach ($stageOptions as $option): ?>
-                                    <option value="<?= htmlspecialchars((string) $option, ENT_QUOTES, 'UTF-8') ?>" <?= $stageFilter === (string) $option ? 'selected' : '' ?>><?= htmlspecialchars((string) $option, ENT_QUOTES, 'UTF-8') ?></option>
+                                    <option value="<?= htmlspecialchars((string) $option, ENT_QUOTES, 'UTF-8') ?>" <?= $stageFilter === (string) $option ? 'selected' : '' ?>><?= htmlspecialchars((string) preg_replace('/^Group\s+/i', '', (string) $option), ENT_QUOTES, 'UTF-8') ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </th>
@@ -303,7 +303,7 @@ function sortLink(array $overrides = []): string
                             </td>
                             <td data-label="Wedstrijd">#<?= $displayNumber ?> <?= htmlspecialchars(wkMatchLabel($row), ENT_QUOTES, 'UTF-8') ?></td>
                             <td data-label="Deelnemer"><?= htmlspecialchars($row['participant_name'], ENT_QUOTES, 'UTF-8') ?></td>
-                            <td data-label="Groep/fase"><?= htmlspecialchars($row['stage'], ENT_QUOTES, 'UTF-8') ?></td>
+                            <td data-label="Gr"><?= htmlspecialchars((string) preg_replace('/^Group\s+/i', '', (string) $row['stage']), ENT_QUOTES, 'UTF-8') ?></td>
                             <td data-label="Datum"><?= htmlspecialchars(date('d-m-Y H:i', strtotime((string) $row['match_date'])), ENT_QUOTES, 'UTF-8') ?></td>
                             <td data-label="Voorspelling"><strong><?= (int) $row['predicted_home_score'] ?> - <?= (int) $row['predicted_away_score'] ?></strong></td>
                             <td data-label="Status"><span class="badge <?= htmlspecialchars(wkReviewStatusBadgeClass((string) $row['review_status']), ENT_QUOTES, 'UTF-8') ?>"><?= htmlspecialchars((string) $row['review_status'], ENT_QUOTES, 'UTF-8') ?></span></td>
@@ -322,4 +322,3 @@ function sortLink(array $overrides = []): string
     </div>
 </div>
 <?= wkPageShellEnd() ?>
-

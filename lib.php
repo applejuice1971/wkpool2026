@@ -557,8 +557,6 @@ function wkPageShellStart(string $title, string $active = 'home', string $accent
     $items = [
         'home' => ['label' => 'Home', 'href' => 'index.php', 'icon' => '🏠'],
         'participants' => ['label' => 'Deelnemers', 'href' => 'participants.php', 'icon' => '👥'],
-        'matches' => ['label' => 'Wedstrijden', 'href' => 'matches.php', 'icon' => '🗓️'],
-        'print-ko-proposal' => ['label' => 'Printformulier', 'href' => 'form-print-ko-proposal.php', 'icon' => '🖨️'],
         'imports' => ['label' => 'Imports', 'href' => 'imports-overview.php', 'icon' => '📥'],
         'predictions' => ['label' => 'Voorspellingen', 'href' => 'predictions-overview.php', 'icon' => '📊'],
         'ko' => ['label' => 'KO voorsp.', 'href' => 'ko-predictions.php', 'icon' => '🥅'],
@@ -567,6 +565,8 @@ function wkPageShellStart(string $title, string $active = 'home', string $accent
         'stats' => ['label' => 'Stats', 'href' => 'stats.php', 'icon' => '📈'],
         'countries' => ['label' => 'Landen', 'href' => 'countries.php', 'icon' => '🌍'],
         'rules' => ['label' => 'Regels', 'href' => 'rules.php', 'icon' => '📋'],
+        'matches' => ['label' => 'Wedstrijden', 'href' => 'matches.php', 'icon' => '🗓️'],
+        'print-ko-proposal' => ['label' => 'Printformulier', 'href' => 'form-print-ko-proposal.php', 'icon' => '🖨️'],
     ];
 
     $nav = '';
@@ -593,6 +593,8 @@ function wkPageShellStart(string $title, string $active = 'home', string $accent
     <meta http-equiv="Pragma" content="no-cache">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{$titleEsc}</title>
+    <link rel="icon" type="image/jpeg" href="assets/wk2026-logo-new.jpg">
+    <link rel="shortcut icon" type="image/jpeg" href="assets/wk2026-logo-new.jpg">
     <style>
         :root {
             --bg-1: #0b1020;
