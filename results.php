@@ -94,8 +94,8 @@ foreach ($stmt->fetchAll() as $row) {
     <section class="panel stack">
         <div class="toolbar">
             <div>
-                <h1>KO-resultaten</h1>
-                <p class="small">Vul per ronde alleen de landen in die doorgaan. Geen doelpunten of losse KO-wedstrijden meer.</p>
+                <h1>Resultaten</h1>
+                <p class="small">Beheer hier zowel de groepsuitslagen als per KO-ronde de landen die doorgaan.</p>
             </div>
         </div>
 

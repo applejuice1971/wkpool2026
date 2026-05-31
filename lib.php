@@ -554,12 +554,12 @@ function wkPageShellStart(string $title, string $active = 'home', string $accent
         'participants' => ['label' => 'Deelnemers', 'href' => 'participants.php', 'icon' => '👥'],
         'matches' => ['label' => 'Wedstrijden', 'href' => 'matches.php', 'icon' => '🗓️'],
         'print-ko-proposal' => ['label' => 'Printformulier', 'href' => 'form-print-ko-proposal.php', 'icon' => '🖨️'],
+        'imports' => ['label' => 'Imports', 'href' => 'imports-overview.php', 'icon' => '📥'],
         'predictions' => ['label' => 'Voorspellingen', 'href' => 'predictions-overview.php', 'icon' => '📊'],
         'ko' => ['label' => 'KO voorsp.', 'href' => 'ko-predictions.php', 'icon' => '🥅'],
         'results' => ['label' => 'Resultaten', 'href' => 'results.php', 'icon' => '✅'],
         'scores' => ['label' => 'Scores', 'href' => 'scores.php', 'icon' => '🏆'],
         'stats' => ['label' => 'Stats', 'href' => 'stats.php', 'icon' => '📈'],
-        'imports' => ['label' => 'Imports', 'href' => 'imports-overview.php', 'icon' => '📥'],
         'countries' => ['label' => 'Landen', 'href' => 'countries.php', 'icon' => '🌍'],
         'rules' => ['label' => 'Regels', 'href' => 'rules.php', 'icon' => '📋'],
     ];
